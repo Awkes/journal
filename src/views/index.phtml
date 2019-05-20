@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title><?=$title?></title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <template id="loginFormTemplate">
+    <h2>Logga in</h2>
+    <form id="loginForm" method="post" action="/api/login">
+      <table>
+        <tr>
+          <td><label for="loginUser">Användare:</label></td>
+          <td><input type="text" id="loginUser" name="username"></td>
+        </tr>
+        <tr>
+          <td><label for="loginPass">Lösenord:</label></td>
+          <td><input type="password" id="loginPass" name="password"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button type="submit">Logga in</button></td>
+        </tr>
+      </table>
+    </form>
+  </template>
+
+  <template id="loggedInTemplate">
+    <h2>Inloggad</h2>
+    <p>Du är inloggad som <b><?=$_SESSION['username'];?></b></p>
+  </template>
+
+  <template id="registerFormTemplate">
+    <h2>Registrera användare</h2>
+    <p>Det här är ett template som visar registreringsformulär.</p>
+  </template>
+
+  <template id="showAllUsers">
+    <h2>Alla registrerade användare</h2>
+    <ul>
+
+    </ul>
+  </template>
+
+  <div class="container">
+
+    <header>
+      <h1><?=$title?></h1>
+    </header>
+    <main>
+      
+    </main>
+
+  </div>
+  <script type="text/javascript" src="main.js"></script>
+</body>
+</html>
