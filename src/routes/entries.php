@@ -50,4 +50,11 @@ return function ($app) {
     return $response->withJson($entry->delEntry($_SESSION['userID'],$args['id']));
   })->add($auth);
 
+    // Ändra inlägg
+    $app->post('/entry/editEntry', function ($request, $response, $args) {
+      $data = $request->getParsedBody();
+      $entry = new Entry($this->db);
+      return $response->withJson($entry->editEntry($data));
+    });//->add($auth);
+
 };
