@@ -24,7 +24,7 @@ class User extends Mapper {
   }
 
   // Kontrollera om användare existerar
-  public function checkUser($user) {
+  private function checkUser($user) {
     $statement = $this->db->prepare('SELECT username FROM users WHERE userName=?');
     $statement->execute([$user]);
     $result = $statement->fetch(PDO::FETCH_ASSOC);
