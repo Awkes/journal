@@ -50,4 +50,17 @@ return function ($app) {
     return $response->withJson($entry->delEntry($_SESSION['userID'],$args['id']));
   })->add($auth);
 
+  $app->get('/indexEntry', function($request, $response){
+    $indexEntry = new Entry($this->db);
+    return $response->withJson($indexEntry->indexEntry());
+  });
+
+
+  $app->post('/addComment', function($request, $response){
+    
+    $data = $request->getParsedBody();
+    $comment = new Entry($this->db);
+
+    return $response->withJson($comment->addComment($data));
+  });
 };
