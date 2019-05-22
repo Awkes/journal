@@ -45,3 +45,4 @@ class Entry extends Mapper {
     );
   }
 }
+

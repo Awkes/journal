@@ -36,3 +36,20 @@ DELETE
 /api/login          Logga in [BODY = user, pass]  
 /api/logoff         Logga ut  
 /api/ping           Kontrollera inlogg  
+
+
+##COMMENTS
+
+GET
+/comment            Hämta alla inlägg  
+/comment?limit=X    Hämta X antal inlägg  
+/comment?order=X    Hämta inlägg sorterat i ordning X [ASC eller DESC (ASC är standard)]  
+
+POST
+/comment            Skapa ny kommentar som inloggad användare [BODY = content, entryID]
+
+PUT
+/comment/{id}       Uppdatera en kommentar som inloggad användare [BODY = content]
+
+DELETE
+/comment            Ta bort en kommentar som inloggad användare
