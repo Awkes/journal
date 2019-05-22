@@ -50,4 +50,5 @@ return function ($app) {
     $entry = new Entry($this->db);
     return $response->withJson($entry->delEntry($args['id']));
   })->add($auth);
+
 };
