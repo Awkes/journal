@@ -30,6 +30,17 @@ POST
   
 DELETE  
 /entry/{id}         Ta bort ett inlägg med ID {id}  
+
+## LIKES  
+  
+GET  
+/likes/{id}         Räkna likes för entry med ID {id}  
+  
+POST  
+/like/{id}          Like:a ett inlägg med ID {id}  
+  
+DELETE  
+/like/{id}          Dislike:a ett inlägg med ID {id}
   
 ## LOG IN/OFF  
    
