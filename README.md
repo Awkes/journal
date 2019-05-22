@@ -49,7 +49,7 @@ DELETE
 /api/ping           Kontrollera inlogg  
 
 
-##COMMENTS
+## COMMENTS
 
 GET
 /comment            Hämta alla inlägg  
