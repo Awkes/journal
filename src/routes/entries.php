@@ -4,17 +4,7 @@ return function ($app) {
   // Register auth middleware
   $auth = require __DIR__ . '/../middlewares/auth.php';
 
-  // Skapa en GET route som hämtar alla inlägg
-  // Skapa en GET route som hämtar de X senaste/första inläggen
-  // Skapa en GET route som hämtar alla inlägg som är skrivna av en specifik användare
-  // Skapa en GET route som hämtar de X senaste inläggen som är skrivna av en specifik användare
-  // Skapa en GET route som hämtar de X första inläggen som är skrivna av en specifik användare
-
-  // Utan qrystrings hämtas alla inlägg.
-  // Med limit hämtas begränsat antal
-  // Med order ASC eller DESC sorteras de efter första/sista
-  // Med user hämtas inlägg från specifikt userID
-
+  // GET route som hämtar inlägg
   $app->get('/entries', function ($request, $response) {  
     $entry = new Entry($this->db);
     // Läs in eventuella qrystrings
@@ -27,34 +17,38 @@ return function ($app) {
       ? 'DESC' : 'ASC';
     // Hämta från specifik user
     $user = (isset($qryString['user']) && is_numeric($qryString['user'])) 
-      ? 'WHERE userID = '.$qryString['user'] : '';
+      ? 'WHERE createdBy = '.$qryString['user'] : '';
     return $response->withJson($entry->getEntries($user,$order,$limit));
   });
 
-  // Skapa en POST route som sparar ett nytt inlägg för en viss användare.
+  // POST route som sparar ett nytt inlägg för en viss användare.
   $app->post('/entry', function ($request, $response) {
     $data = $request->getParsedBody();
-
     if (isset($data['title']) && isset($data['content'])) {
       $entry = new Entry($this->db);
-      return $response->withJson($entry->newEntry($_SESSION['userID'],$data['title'],$data['content']));
+      return $response->withJson($entry->newEntry($data['title'],$data['content']));
     } 
     else {
       return $response->withStatus(400);
     }
   })->add($auth);
 
-  // Skapa en DELETE route som raderar ett inlägg.
-  $app->delete('/entry/{id}', function ($request, $response, $args) {
-    $entry = new Entry($this->db);
-    return $response->withJson($entry->delEntry($_SESSION['userID'],$args['id']));
+  // PUT route som uppdaterar ett inlägg för en viss användare.
+  $app->put('/entry/{id}', function ($request, $response, $args) {
+    $data = $request->getParsedBody();
+    if (isset($data['title']) && isset($data['content'])) {
+      $entry = new Entry($this->db);
+      return $response->withJson($entry->updEntry($args['id'],$data['title'],$data['content']));
+    } 
+    else {
+      return $response->withStatus(400);
+    }
   })->add($auth);
 
-    // Ändra inlägg
-    $app->post('/entry/editEntry', function ($request, $response, $args) {
-      $data = $request->getParsedBody();
-      $entry = new Entry($this->db);
-      return $response->withJson($entry->editEntry($data));
-    });//->add($auth);
+  // DELETE route som raderar ett inlägg.
+  $app->delete('/entry/{id}', function ($request, $response, $args) {
+    $entry = new Entry($this->db);
+    return $response->withJson($entry->delEntry($args['id']));
+  })->add($auth);
 
 };

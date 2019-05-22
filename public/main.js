@@ -2,7 +2,7 @@
   
   // Knyt templates till views
   const views = {
-    login: ['loginFormTemplate','registerFormTemplate'/*, Alla inlägg */],
+    login: ['loginFormTemplate','registerFormTemplate','indexEntry'],
     loggedIn: ['loggedInTemplate'/*, Alla inlägg */],
   }
 
@@ -28,6 +28,8 @@
   }
 
   renderView(views.login);
+  
+  
 
   // loginForm
   const loginForm = document.querySelector('#loginForm');
@@ -52,8 +54,6 @@
       });
   });
 
-
-
   // Hämta alla users
   const getAllUsers = () => {
     fetch('/users')
@@ -62,5 +62,8 @@
         console.log(data);
       });
   }
+ 
+  
+
 
 })(); // Namespace end
