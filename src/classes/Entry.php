@@ -44,4 +44,16 @@ class Entry extends Mapper {
       "success"=>$success
     );
   }
+
+  // Redigera inlägg
+  public function editEntry($content) {
+    $s = $this->db->prepare('UPDATE entries SET title = :title, content = :content, createdAt = NOW() WHERE entryID = :entryID');
+    $s->execute([
+      ':title' => $content['title'],
+      ':content' => $content['content'],
+      ':entryID' => $content['entryID'],
+    ]);
+    var_dump($content['title']);
+  }
 }
+
