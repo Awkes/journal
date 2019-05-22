@@ -31,26 +31,5 @@ class Entry extends Mapper {
       "success"=>true
     );
   }
-
-  //20 inläggen som ska visas på
-public function indexEntry(){
-  $s = $this->db->prepare('SELECT * FROM entries ORDER BY createdAt DESC limit 20');
-  $s->execute();
-  return $s->fetchAll(PDO::FETCH_ASSOC);
-}
-
-
-//addcomment
-public function addComment($comment){
-
-  $s = $this->db->prepare('INSERT INTO comments (entryID, content, createdBy, createdAt) VALUES (:entryID, :content, :createdBy, NOW())');
-  $s->execute([
-    ':entryID' => $comment['entryID'],    
-    ':content' => $comment['content'],    
-    ':createdBy' => $comment['createdBy']    
-  ]);
-  
-}
-
 }
 
