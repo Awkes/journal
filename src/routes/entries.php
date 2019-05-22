@@ -17,7 +17,7 @@ return function ($app) {
       ? 'DESC' : 'ASC';
     // Hämta från specifik user
     $user = (isset($qryString['user']) && is_numeric($qryString['user'])) 
-      ? 'WHERE userID = '.$qryString['user'] : '';
+      ? 'WHERE createdBy = '.$qryString['user'] : '';
     return $response->withJson($entry->getEntries($user,$order,$limit));
   });
 
