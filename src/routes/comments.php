@@ -36,8 +36,8 @@ return function ($app) {
   })->add($auth);
 
   $app->put('/comment/{id}', function($request, $response, $args){
+    $data = $request->getParsedBody();
     if(isset($data['content']) && isset($args['id'])) {
-      $data = $request->getParsedBody();
       $commentID = $args['id'];
       $comment = new Comments($this->db);
   

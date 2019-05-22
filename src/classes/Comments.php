@@ -16,7 +16,7 @@ class Comments extends Mapper{
         $succes = $s->execute([
           ':entryID' => $comment['entryID'],    
           ':content' => $comment['content'],    
-          ':createdBy' => $SESSION['userID']    
+          ':createdBy' => $_SESSION['userID']    
         ]);
     }   
 
@@ -24,15 +24,15 @@ class Comments extends Mapper{
         $s = $this->db->prepare('UPDATE comments SET content = :content , createdAt = NOW() WHERE commentID = :commentID AND createdBy = :createdBy');
         $s->bindParam(':content', $data['content'], PDO::PARAM_STR);
         $s->bindParam(':commentID', $commentID, PDO::PARAM_INT);
-        $s->bindParam(':createdBy', $SESSION['userID'], PDO::PARAM_STR);
+        $s->bindParam(':createdBy', $_SESSION['userID'], PDO::PARAM_INT);
         $s->execute();
   }
-  
+
       public function deleteComment($commentID){
         $s = $this->db->prepare('DELETE FROM comments WHERE commentID = :commentID AND createdBy = :createdBy');
         $s->execute([
             ':commentID' => $commentID,
-            ':createdBy' => $SESSION['userID']
+            ':createdBy' => $_SESSION['userID']
         ]);
     }
 
