@@ -41,7 +41,6 @@
         this.renderView(data.loggedIn ? views.entriesLoggedIn : views.entriesNotLoggedIn);
         this.loadEntries(entries);
       });
-      console.log('loadView')
     }
 
     // Ladda in inlägg, all = alla, private = inloggad användare
@@ -62,7 +61,7 @@
       heading.textContent = title;
       fragment.append(heading);
       // Skapa sökruta
-      console.log('loadEntries');
+      
       // Hämta och läs in inlägg
       fetch(url)
         .then(response => response.ok ? response.json() : new Error(response.statusText))
