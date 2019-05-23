@@ -13,25 +13,27 @@
   <div class="container">
 
     <header>
-      <div id="logo">
-        <img src="logo.png" id="logo" alt="logo">
-      </div>
     </header>
 
     <!-- Header templates -->
+    <template id="logoTemplate">
+      <div id="logo">
+        <img src="logo.png" id="logo" alt="logo">
+      </div>
+    </template>
 
     <template id="navTemplate">
       <nav>
-        <a href="">Alla inlägg</a>
-        <a href="">Mina inlägg</a>
-        <a href="">Skriv nytt inlägg</a>
+        <a href="" id="navAllEntries">Alla inlägg</a>
+        <a href="" id="navPrivateEntries">Mina inlägg</a>
+        <a href="" id="navNewEntry">Skriv nytt inlägg</a>
       </nav>
     </template>
 
     <template id="memberLogoutTemplate">
       <div id="memberLogout">
         <span id="loggedInMember">Olle ollesson |</span>
-        <span id="logout"><a href="#">Logga ut</a></span>
+        <span id="logoff"><a href="">Logga ut</a></span>
       </div>
     </template>
     
@@ -108,29 +110,10 @@
     </template>
 
     <template id="entriesTemplate">
-      <h1>20 senaste inläggen</h1>
-      <div class="post">
-        <h3>Inlägg #1</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti expedita animi ipsam vel
-          explicabo veniam nulla maiores ab nam ad.</p>
-      </div>
-      <div class="post">
-        <h3>Inlägg #2</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti expedita animi ipsam vel
-          explicabo veniam nulla maiores ab nam ad.</p>
-      </div>
-      <div class="post">
-        <h3>Inlägg #3</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti expedita animi ipsam vel
-          explicabo veniam nulla maiores ab nam ad.</p>
-      </div>
-      <div class="post">
-        <h3>Inlägg #4</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti expedita animi ipsam vel
-          explicabo veniam nulla maiores ab nam ad.</p>
+      <div id="entriesListing">
       </div>
     </template>
-  
+ 
     <template id="entryTemplate">
       <div id="newEntry">
         <form id="newEntryForm">
