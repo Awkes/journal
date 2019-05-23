@@ -143,6 +143,35 @@
       </div>
     </template>
   
+    <template id="newEntryTemplate">
+      <div id="newEntry">
+        <form id="newEntryForm">
+          <table id="newEntryTable">
+            <tr>
+              <td colspan="4">
+                <h1>Nytt inlägg</h1>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3"><label for="newEntryTitle">Titel:</label></td>
+            </tr>
+            <tr>
+              <td><input type="text" name="newEntrytitle"></td>
+            </tr>
+            <tr>
+              <td colspan="3"><label for="newEntryPost">Inlägg:</label></td>
+            </tr>
+            <tr>
+              <td><textarea name="newEntryPost"></textarea></td>
+            </tr>
+            <tr>
+              <td colspan="4"><button type="submit" class="btn">Uppdatera inlägg</button></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </template>
+    
     <template id="editEntryTemplate">
       <div id="editEntry">
         <form id="editEntryForm">

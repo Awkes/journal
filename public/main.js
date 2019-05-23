@@ -1,9 +1,4 @@
-// (function(){
-  // Initiera sessionStorage-variabler om dem inte redan finns
-  // if (!sessionStorage.getItem('activeView')) sessionStorage.setItem('activeView','');
-  // if (!sessionStorage.getItem('userID')) sessionStorage.setItem('userID','');
-  // if (!sessionStorage.getItem('username')) sessionStorage.setItem('username','');
-
+(function(){
   // Knyt templates till views
   const views = {
     headerLoggedIn     : ['logoTemplate','navTemplate','memberLogoutTemplate'],
@@ -46,14 +41,15 @@
         this.renderView(data.loggedIn ? views.entriesLoggedIn : views.entriesNotLoggedIn);
         this.loadEntries(entries);
       });
+      console.log('loadView')
     }
 
-    // Ladda in inlägg all = alla, private = inloggad användare
+    // Ladda in inlägg, all = alla, private = inloggad användare
     loadEntries(entries='all') {
       const target = document.querySelector('#entriesListing');
       let url, title;
       if (entries === 'private') {
-        url = '/entries?user='+sessionStorage.getItem('userID')+'&order=desc'
+        url = '/entries?user='+sessionStorage.getItem('userID')+'&order=desc';
         title = 'Dina inlägg';
       }
       else {
@@ -66,7 +62,7 @@
       heading.textContent = title;
       fragment.append(heading);
       // Skapa sökruta
-
+      console.log('loadEntries');
       // Hämta och läs in inlägg
       fetch(url)
         .then(response => response.ok ? response.json() : new Error(response.statusText))
@@ -74,7 +70,7 @@
           data.forEach(post => {
             const entry = document.createElement('div');
             const heading = document.createElement('h3');
-            const date = document.createElement('p')
+            const date = document.createElement('p');
             const content = document.createElement('p');
             const user = document.createElement('p');
             entry.classList.add('post');
@@ -85,6 +81,7 @@
             user.textContent = 'ANVÄNDARNAMN';
             entry.append(heading,date,content,user);
             fragment.append(entry);
+            // BYGG PAGINERING
           });
           // Skriv ut
           target.innerHTML = '';
@@ -93,9 +90,9 @@
     }
 
     showEntry() {
-
+     
     }
-
+    
     editEntry() {
 
     }
@@ -107,20 +104,13 @@
   });
 
   // Skriv ut main views
-  if (sessionStorage.getItem('activeView') === 'privateEntries') {
-
-  }
-  else if (sessionStorage.getItem('activeView') === 'viewEntry') {
-    
-  }
-  else if (sessionStorage.getItem('activeView') === 'newEntry') {
-
-  }
-  // Om ingen activeView är vald, kör view för startsida (meddelanden), om vi inte är inloggad visas inloggnings och registreringsformulär
-  else { (new EntryView).loadView() }
+  if (sessionStorage.getItem('activeView') === 'privateEntries') (new EntryView).loadView('private');
+  else if (sessionStorage.getItem('activeView') === 'showEntry') (new EntryView).showEntry();
+  else if (sessionStorage.getItem('activeView') === 'newEntry') (new EntryView).renderView(views.newEntry);
+  else (new EntryView).loadView();
  
   // Funktion för att uppdatera eventlisteners
-  const updateEventListeners = () => {
+  function updateEventListeners() {
     // Login - Logoff
     const loginForm = document.querySelector('#loginForm');
     if (loginForm) loginForm.addEventListener('submit', login);
@@ -129,15 +119,30 @@
 
     // Menyval
     const navAllEntries = document.querySelector('#navAllEntries');
-    if (navAllEntries) navAllEntries.addEventListener('click', e => { 
-      e.preventDefault();
-      (new EntryView).loadView();
-    });
+    if (navAllEntries) navAllEntries.addEventListener('click', loadAllEntries);
     const navPrivateEntries = document.querySelector('#navPrivateEntries');
-    if (navPrivateEntries) navPrivateEntries.addEventListener('click', e => { 
-      e.preventDefault();
-      (new EntryView).loadView('private');
-    });
+    if (navPrivateEntries) navPrivateEntries.addEventListener('click', loadPrivateEntries);
+    const navNewEntry = document.querySelector('#navNewEntry');
+    if (navNewEntry) navNewEntry.addEventListener('click', writeNewEntry);  
+  }
+
+  // Funktioner för att ladda vyer
+  function loadAllEntries(e) {
+    e.preventDefault();
+    (new EntryView).loadView();
+    sessionStorage.setItem('activeView', 'allEntries');
+  }
+
+  function loadPrivateEntries(e) {
+    e.preventDefault();
+    (new EntryView).loadView('private');
+    sessionStorage.setItem('activeView', 'privateEntries');
+  }
+
+  function writeNewEntry(e) {
+    e.preventDefault();
+    (new EntryView).renderView(views.newEntry);
+    sessionStorage.setItem('activeView', 'newEntry');
   }
 
   // Loginfunktion
@@ -154,7 +159,7 @@
       }
       else {
         (new BaseView).renderView(views.headerLoggedIn, 'header');
-        (new BaseView).renderView(views.entriesLoggedIn);
+        (new EntryView).loadView();
         return response.json();
       } 
     })
@@ -167,12 +172,11 @@
   // Logofffunktion
   function logoff(e) {
     e.preventDefault();
-    console.log('funkar')
     fetch('/api/logoff')
     .then(response => {
         console.log(response);
-        (new BaseView).renderView(views.headerNotLoggedIn);
-        (new BaseView).renderView(views.entriesNotLoggedIn);
+        (new BaseView).renderView(views.headerNotLoggedIn, 'header');
+        (new EntryView).loadView();
         sessionStorage.clear();
     });
   }
@@ -184,6 +188,4 @@
       .catch(error => console.error(error));
   }
 
-
-
-// })(); // Namespace end
+})(); // Namespace end
