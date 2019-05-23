@@ -1,33 +1,40 @@
-(function(){
+// (function(){
   
   // Knyt templates till views
   const views = {
-    login: ['loginFormTemplate','registerFormTemplate','indexEntry'],
-    loggedIn: ['loggedInTemplate'/*, Alla inlägg */],
+    headerLoggedIn     : ['navTemplate','memberLogoutTemplate'],
+    entriesNotLoggedIn : ['loginFormTemplate','registerFormTemplate','searchTemplate','entriesTemplate'],
+    entriesLoggedIn    : ['searchTemplate','entriesTemplate'],
+    showEntry          : ['showEntryTemplate'],
+    newEntry           : ['newEntryTemplate'],
+    editEntry          : ['editEntryTemplate'],
+    users              : ['membersTemplate']
   }
 
-  // views
-  const renderView = (view) => {
-    // Definera target
-    const target = document.querySelector('main');
-    target.innerHTML = '';
-    // Loopa igenom vår view
-    view.forEach(template => {
-      // Hämta template
-      const templateMarkup = document.querySelector('#'+template).innerHTML;
-      
-      // Skapa div och läs in innehållet från template
-      const content = document.createElement('div');
-      content.innerHTML = templateMarkup;
-      
-      // Skriva ut innehållet i target
-      target.append(content);
-
-      // Hämta in data till view
-    });
+  // Basic View
+  class BaseView {
+    renderView(view) {
+      // Definera target
+      const target = document.querySelector('main');
+      target.innerHTML = '';
+      // Loopa igenom vår view
+      view.forEach(template => {
+        // Hämta template
+        const templateMarkup = document.querySelector('#'+template).innerHTML;
+        
+        // Skapa div och läs in innehållet från template
+        const content = document.createElement('div');
+        content.innerHTML = templateMarkup;
+        
+        // Skriva ut innehållet i target
+        target.append(content);
+      });
+    }
   }
+  
 
-  renderView(views.login);
+
+  (new BaseView).renderView(views.entriesNotLoggedIn);
   
   
 
@@ -41,29 +48,12 @@
       body   : formData
     })
       .then(response => {
-        console.log(response)
-        if (!response.ok) {
-          return Error(response.statusText);
-        }
-        else {
-         return response.json();
-        }
-      })
-      .then(data => {
-        renderView(views.loggedIn);
+        (!response.ok)
+          ?  document.querySelector('#loginFormError').innerText = 'Fel användarnamn eller lösenord.'
+          : (new BaseView).renderView(views.entriesLoggedIn);
       });
   });
-
-  // Hämta alla users
-  const getAllUsers = () => {
-    fetch('/users')
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-      });
-  }
  
-  
 
 
-})(); // Namespace end
+// })(); // Namespace end
