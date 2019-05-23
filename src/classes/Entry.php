@@ -4,9 +4,9 @@ class Entry extends Mapper {
   // Hämta inlägg
   public function getEntries($user,$order,$limit) {   
     $s = $this->db->prepare("
-      SELECT entries.*, users.username FROM entries $user
+      SELECT entries.*, users.username FROM entries 
       JOIN users ON users.userID = entries.createdBy
-      ORDER BY createdAt $order $limit
+      $user ORDER BY createdAt $order $limit
     ");
     $s->execute();
     return $s->fetchAll(PDO::FETCH_ASSOC);
