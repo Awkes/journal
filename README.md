@@ -6,62 +6,79 @@ Repo: https://github.com/Awkes/journal.git
   
 # API ROUTES  
   
+## LOG IN/OFF  
+  
+| GET               | Beskrivning |
+| ---               | --- |
+| /api/logoff       | Logga ut |
+| /api/ping         | Kontrollera inlogg  |
+
+| POST               | Beskrivning |
+| ---               | --- |
+| /api/login        | Logga in [BODY = user, pass] |
+
+  
 ## USERS  
+    
+| GET               | Beskrivning |
+| ---               | --- |
+| /users            | Hämta alla användare |
+| /user/{id}        | Hämta en enskild användare |
   
-GET  
-/users              Hämta alla användare  
-/user/{id}          Hämta en enskild användare  
-  
-POST  
-/user               Skapa ny användare [BODY = user, pass]  
+| POST              | Beskrivning |
+| ---               | ---
+| /user             | Skapa ny användare [BODY = user, pass] |
   
 ## ENTRIES  
   
-GET  
-/entries            Hämta alla inlägg  
-/entries?limit=X    Hämta X antal inlägg  
-/entries?order=X    Hämta inlägg sorterat i ordning X [ASC eller DESC (ASC är standard)]  
-/entries?userID=X   Hämta inlägg från user med ID X.  
-/entries?search=X   Söker på inlägg där X finns i titel eller innehåll.
+| GET               | Beskrivning |
+| ---               | --- |
+| /entries          | Hämta alla inlägg |
+| /entries?limit=X  | Hämta X antal inlägg |
+| /entries?order=X  | Hämta inlägg sorterat i ordning X [ASC eller DESC (ASC är standard)] |
+| /entries?userID=X | Hämta inlägg från user med ID X. |
+| /entries?search=X | Söker på inlägg där X finns i titel eller innehåll. |
   
 (Alla querystrings går att kombinera)  
   
-POST  
-/entry              Skapa nytt inlägg som inloggad användare [BODY = title, content]  
+| POST              | Beskrivning |
+| ---               | --- |
+| /entry            | Skapa nytt inlägg som inloggad användare [BODY = title, content] |
   
-DELETE  
-/entry/{id}         Ta bort ett inlägg med ID {id}  
+| DELETE            | Beskrivning |
+| ---               | --- |
+| /entry/{id}       | Ta bort ett inlägg med ID {id} |
 
 ## LIKES  
   
-GET  
-/likes/{id}         Räkna likes för entry med ID {id}  
+| GET               | Beskrivning |
+| ---               | --- |
+| /likes/{id}       | Räkna likes för entry med ID {id} |
   
-POST  
-/like/{id}          Like:a ett inlägg med ID {id}  
+| POST              | Beskrivning |
+| ---               | --- |  
+| /like/{id}        |Like:a ett inlägg med ID {id} |
   
-DELETE  
-/like/{id}          Dislike:a ett inlägg med ID {id}
+| DELETE            | Beskrivning |
+| ---               | --- |  
+| /like/{id}        | Dislike:a ett inlägg med ID {id} |
   
-## LOG IN/OFF  
-   
-/api/login          Logga in [BODY = user, pass]  
-/api/logoff         Logga ut  
-/api/ping           Kontrollera inlogg  
-
-
 ## COMMENTS
 
-GET
-/comment            Hämta alla inlägg  
-/comment?limit=X    Hämta X antal inlägg  
-/comment?order=X    Hämta inlägg sorterat i ordning X [ASC eller DESC (ASC är standard)]  
+| GET               | Beskrivning |
+| ---               | --- |
+| /comment          | Hämta alla inlägg |
+| /comment?limit=X  | Hämta X antal inlägg |
+| /comment?order=X  | Hämta inlägg sorterat i ordning X [ASC eller DESC (ASC är standard)] |
 
-POST
-/comment            Skapa ny kommentar som inloggad användare [BODY = content, entryID]
+| POST              | Beskrivning |
+| ---               | --- |  
+| /comment          | Skapa ny kommentar som inloggad användare [BODY = content, entryID] |
 
-PUT
-/comment/{id}       Uppdatera en kommentar som inloggad användare [BODY = content]
+| PUT               | Beskrivning |
+| ---               | --- |  
+| /comment/{id}     | Uppdatera en kommentar som inloggad användare [BODY = content] |
 
-DELETE
-/comment            Ta bort en kommentar som inloggad användare
+| DELETE            | Beskrivning |
+| ---               | --- |  
+| /comment          | Ta bort en kommentar som inloggad användare |
