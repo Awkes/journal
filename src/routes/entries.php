@@ -17,8 +17,11 @@ return function ($app) {
       ? 'DESC' : 'ASC';
     // Hämta från specifik user
     $user = (isset($qryString['user']) && is_numeric($qryString['user'])) 
-      ? 'WHERE createdBy = '.$qryString['user'] : '';
-    return $response->withJson($entry->getEntries($user,$order,$limit));
+      ? 'AND createdBy = '.$qryString['user'] : '';
+    // Sök efter ett inlägg
+    $search = isset($qryString['search']) ? $qryString['search'] : '';
+
+    return $response->withJson($entry->getEntries($user,$order,$limit,$search));
   });
 
   // POST route som sparar ett nytt inlägg för en viss användare.

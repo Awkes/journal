@@ -20,19 +20,31 @@ body{
 }
 
 header{
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0.5em;
+    align-items: center;
 }
+
+#logo,#memberLogout,nav { grid-column: 1/5; }
 
 #logo{
     display: block;
     width: 240px;
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+#searchEntries {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0.5em;
+    margin: 0;
+    grid-column: 2/4;
 }
 
 nav{
-    text-align: right; 
-    align-self: flex-end;
-    padding-bottom: 8px;
+    text-align: center; 
 }
 
 nav a{
@@ -48,13 +60,14 @@ footer{
     padding: 10px 0px;
 }
 
-.post{
+.post,.no-entries{
     width: 100%;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     background-color: rgb(216, 216, 216);
     padding: 10px;
     margin: 0 10px 20px 0;
+    cursor: pointer;
 }
 
 table{
@@ -70,7 +83,7 @@ table h3{
 
 .loginDiv, .registerDiv{
     width: 100%;
-
+    margin: 0;
 }
 
 #loginTable, #registerTable, #memberSuccess, #newEntry, #editEntry{
@@ -115,8 +128,8 @@ form{
 
 #memberLogout{
     width: 100%;
-    text-align: right;
-    padding: 12px 0 0 0;
+    text-align: center;
+    padding: 0 20px;
 }
 
 #memberLogout a{
@@ -206,4 +219,36 @@ hr{
     background-color: rgb(216, 216, 216);
     margin-bottom: 10px;
     padding: 0 10px 0 10px;
+}
+
+/* Paginering */
+.entries-hidden { display: none; }
+.entries-paging { list-style-type: none; }
+.entries-paging li { display: inline-block; }
+.entries-paging a { 
+    display: block; 
+    border: 1px solid #000;
+    width: 2em;
+    padding: 0.2em;
+    margin: 0.5em;
+    text-align: center;
+    text-decoration: none;
+    color: #000;
+}
+.entries-paging-active { 
+  background-color: rgb(216, 216, 216); 
+  font-weight: bold;
+}
+
+/* Header > 850px */
+@media(min-width: 850px) {
+  header { grid-template-columns: 2fr 1fr 1fr 2fr; }
+  #logo { 
+    margin: initial; 
+    grid-column: 1/3;
+  }
+  #memberLogout { grid-column: 3/5; }
+  #memberLogout,nav { text-align: right; }
+  nav { grid-column: 1/4; }
+  #searchEntries { grid-column: 4/5; }
 }

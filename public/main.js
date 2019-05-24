@@ -1,10 +1,10 @@
 (function(){
   // Knyt templates till views
   const views = {
-    headerLoggedIn     : ['logoTemplate','navTemplate','memberLogoutTemplate'],
-    headerNotLoggedIn  : ['logoTemplate'],
-    entriesNotLoggedIn : ['loginFormTemplate','registerFormTemplate','searchTemplate','entriesTemplate'],
-    entriesLoggedIn    : ['searchTemplate','entriesTemplate'],
+    headerLoggedIn     : ['logoTemplate','memberLogoutTemplate','navTemplate','searchTemplate'],
+    headerNotLoggedIn  : ['logoTemplate','searchTemplate'],
+    entriesNotLoggedIn : ['loginFormTemplate','registerFormTemplate','entriesTemplate'],
+    entriesLoggedIn    : ['entriesTemplate'],
     showEntry          : ['showEntryTemplate'],
     newEntry           : ['newEntryTemplate'],
     editEntry          : ['editEntryTemplate'],
@@ -21,36 +21,37 @@
       view.forEach(template => {
         // Hämta template
         const templateMarkup = document.querySelector('#'+template).innerHTML;
-        
-        // Skapa div och läs in innehållet från template
-        const content = document.createElement('div');
-        content.innerHTML = templateMarkup;
-        
+        // Läs in innehållet från template
+        const content = document.createElement('template');
+        content.innerHTML = templateMarkup;       
         // Skriva ut innehållet i target
-        target.append(content);
+        target.append(content.content);
       });
       updateEventListeners();
     }
   }
 
-  // View för flera inlägg
+  // Views för inlägg
   class EntryView extends BaseView {
     // Bestäm view baserat på om man är inloggad eller ej
-    loadView (entries='all') {
+    loadView(entries='all') {
       checkLogin().then(data => {
         this.renderView(data.loggedIn ? views.entriesLoggedIn : views.entriesNotLoggedIn);
         this.loadEntries(entries);
       });
-      console.log('loadView')
     }
 
-    // Ladda in inlägg, all = alla, private = inloggad användare
+    // Ladda in inlägg, all = alla, private = inloggad användare, 
     loadEntries(entries='all') {
       const target = document.querySelector('#entriesListing');
       let url, title;
       if (entries === 'private') {
         url = '/entries?user='+sessionStorage.getItem('userID')+'&order=desc';
-        title = 'Dina inlägg';
+        title = 'Mina inlägg';
+      }
+      else if (entries === 'search') {
+        url = '/entries?search='+sessionStorage.getItem('searchString')+'&order=desc';
+        title = 'Sökresultat';
       }
       else {
         url = '/entries?order=desc';
@@ -60,37 +61,78 @@
       // Skapa rubrik
       const heading = document.createElement('h2');
       heading.textContent = title;
-      fragment.append(heading);
-      // Skapa sökruta
-      console.log('loadEntries');
+      fragment.append(heading);      
       // Hämta och läs in inlägg
       fetch(url)
         .then(response => response.ok ? response.json() : new Error(response.statusText))
         .then(data => {
-          data.forEach(post => {
-            const entry = document.createElement('div');
-            const heading = document.createElement('h3');
-            const date = document.createElement('p');
-            const content = document.createElement('p');
-            const user = document.createElement('p');
-            entry.classList.add('post');
-            entry.setAttribute('data-id',post.entryID);
-            heading.textContent = post.title;
-            date.textContent = post.createdAt;
-            content.textContent = post.content;
-            user.textContent = 'ANVÄNDARNAMN';
-            entry.append(heading,date,content,user);
-            fragment.append(entry);
-            // BYGG PAGINERING
-          });
-          // Skriv ut
+          if (data.length > 0) {
+
+            let count = 0; // Håller reda på när ny pagineringsvy ska skapas
+            let pageIndex = 1;  // Används för att numrera pagineringsvyer
+            let page = document.createElement('div'); // Skapar första pagineringsvyn
+            page.setAttribute('data-page', pageIndex);
+            data.forEach(post => {
+              // Kontrollera om vi uppnåt 20 inlägg, appenda isf aktuell page
+              // fragment och skapa sedan en ny
+              if (count === 20) {
+                count = 0; // Nollställ count
+                pageIndex++; // Öka på pageIndex
+                fragment.append(page);
+                page = document.createElement('div'); // Skapar nästa pagineringsvy
+                page.setAttribute('data-page', pageIndex);
+                page.classList.add('entries-hidden');
+              } 
+              // Skapa HTML för aktuell entry
+              const entry = document.createElement('div');
+              const heading = document.createElement('h3');
+              const posted = document.createElement('p');
+              const content = document.createElement('p');
+              entry.classList.add('post');
+              entry.setAttribute('data-entryid',post.entryID);
+              heading.textContent = post.title;
+              posted.textContent = post.createdAt +' - '+ post.username;
+              content.textContent = post.content.length > 100 
+              ? post.content.substring(0,100)+' ...' 
+              : post.content;
+              entry.append(heading,posted,content);
+              // Appenda entry på aktuell page
+              page.append(entry);
+              // Räkna inlägget
+              count++;
+            });
+            // Skapa pagineringslänkar
+            const paging = document.createElement('ul'); // Lista för paginglänkar
+            paging.classList.add('entries-paging');
+            for (let i = 1; i <= pageIndex; i++) {
+              const listItem = document.createElement('li');
+              const pagingLink = document.createElement('a');
+              pagingLink.setAttribute('href','');
+              pagingLink.setAttribute('data-page', i);
+              pagingLink.textContent = i;
+              if (i === 1) pagingLink.classList.add('entries-paging-active');
+              listItem.append(pagingLink);
+              paging.append(listItem);
+            }
+            // Appenda sista page och paginering
+            fragment.append(page,paging);
+          }
+          else {
+            // Om inga inlägg hittas visa det
+            const noEntries = document.createElement('div');
+            noEntries.classList.add('no-entries');
+            noEntries.textContent = 'Inga inlägg hittades.';
+            fragment.append(noEntries);
+          }
+          // Skriv ut allt på sidan
           target.innerHTML = '';
           target.append(fragment);
-        });
+        })
+        .catch(error => console.error(error));
     }
 
-    showEntry() {
-     
+    showEntry(id) {
+      this.renderView(views.showEntry);
     }
     
     editEntry() {
@@ -111,19 +153,30 @@
  
   // Funktion för att uppdatera eventlisteners
   function updateEventListeners() {
-    // Login - Logoff
+    // Login + Logoff
     const loginForm = document.querySelector('#loginForm');
     if (loginForm) loginForm.addEventListener('submit', login);
     const logout = document.querySelector('#logoff');
     if (logout) logout.addEventListener('click' , logoff);
 
-    // Menyval
+    // Logo + Menyval
+    const logo = document.querySelector('#logo');
+    if (logo) logo.addEventListener('click', loadAllEntries);
     const navAllEntries = document.querySelector('#navAllEntries');
     if (navAllEntries) navAllEntries.addEventListener('click', loadAllEntries);
     const navPrivateEntries = document.querySelector('#navPrivateEntries');
     if (navPrivateEntries) navPrivateEntries.addEventListener('click', loadPrivateEntries);
     const navNewEntry = document.querySelector('#navNewEntry');
-    if (navNewEntry) navNewEntry.addEventListener('click', writeNewEntry);  
+    if (navNewEntry) navNewEntry.addEventListener('click', writeNewEntry);
+    
+    // Sök
+    const searchEntries = document.querySelector('#searchEntries');
+    if (searchEntries) searchEntries.addEventListener('submit', searchAllEntries);
+    const searchString = document.querySelector('#searchString');
+
+    // Entry visning/redigering
+    const entriesListing = document.querySelector('#entriesListing');
+    if (entriesListing) entriesListing.addEventListener('click', handleEntriesEvents);
   }
 
   // Funktioner för att ladda vyer
@@ -139,10 +192,46 @@
     sessionStorage.setItem('activeView', 'privateEntries');
   }
 
+  function searchAllEntries(e) {
+    e.preventDefault();
+    (new EntryView).loadView('search', searchString.value);
+    sessionStorage.setItem('activeView', 'searchEntries');
+    sessionStorage.setItem('searchString', searchString.value);
+    e.target.reset();
+  }
+
   function writeNewEntry(e) {
     e.preventDefault();
     (new EntryView).renderView(views.newEntry);
     sessionStorage.setItem('activeView', 'newEntry');
+  }
+
+  function handleEntriesEvents(e) {
+    e.preventDefault();
+    // Klick på poster laddar ett inlägg
+    if (e.target.matches('.post, .post *')) {
+      const entryID = e.path.find(el => el.dataset.entryid).dataset.entryid;
+      (new EntryView).showEntry(entryID);
+      sessionStorage.setItem('activeView', 'showEntry');
+      sessionStorage.setItem('entryID', entryID);
+    }
+    // Klick på paging byter sida i pagingvyn
+    else if (e.target.matches('.entries-paging a')) {
+      const pages = document.querySelectorAll('#entriesListing > div');
+      // Visar vald vy, gömmer resten
+      pages.forEach(el => {
+        (el.dataset.page === e.target.dataset.page)
+          ? el.classList.remove('entries-hidden')
+          : el.classList.add('entries-hidden');
+      });
+      // Markerar vald vy i pagingnavigationen
+      const paging = document.querySelectorAll('.entries-paging a');
+      paging.forEach(el => {
+        (el.dataset.page === e.target.dataset.page)
+          ? el.classList.add('entries-paging-active')
+          : el.classList.remove('entries-paging-active');
+      });
+    }
   }
 
   // Loginfunktion
@@ -169,7 +258,7 @@
     });
   }
   
-  // Logofffunktion
+  // Logoffunktion
   function logoff(e) {
     e.preventDefault();
     fetch('/api/logoff')
