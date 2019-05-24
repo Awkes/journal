@@ -22,6 +22,7 @@ GET
 /entries?limit=X    Hämta X antal inlägg  
 /entries?order=X    Hämta inlägg sorterat i ordning X [ASC eller DESC (ASC är standard)]  
 /entries?userID=X   Hämta inlägg från user med ID X.  
+/entries?search=X   Söker på inlägg där X finns i titel eller innehåll.
   
 (Alla querystrings går att kombinera)  
   
