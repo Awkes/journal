@@ -20,13 +20,24 @@ body{
 }
 
 header{
-    display: flex;
-    flex-direction: row;
+    /* display: flex;
+    flex-direction: row; */
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1em;
 }
 
 #logo{
     display: block;
     width: 240px;
+    cursor: pointer;
+}
+
+#searchEntries {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0.5em;
+    margin: 0;
 }
 
 nav{
@@ -71,7 +82,7 @@ table h3{
 
 .loginDiv, .registerDiv{
     width: 100%;
-
+    margin: 0;
 }
 
 #loginTable, #registerTable, #memberSuccess, #newEntry, #editEntry{

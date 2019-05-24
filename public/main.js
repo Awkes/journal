@@ -1,10 +1,10 @@
 (function(){
   // Knyt templates till views
   const views = {
-    headerLoggedIn     : ['logoTemplate','navTemplate','memberLogoutTemplate'],
-    headerNotLoggedIn  : ['logoTemplate'],
-    entriesNotLoggedIn : ['loginFormTemplate','registerFormTemplate','searchTemplate','entriesTemplate'],
-    entriesLoggedIn    : ['searchTemplate','entriesTemplate'],
+    headerLoggedIn     : ['logoTemplate','searchTemplate','navTemplate','memberLogoutTemplate'],
+    headerNotLoggedIn  : ['logoTemplate','searchTemplate'],
+    entriesNotLoggedIn : ['loginFormTemplate','registerFormTemplate','entriesTemplate'],
+    entriesLoggedIn    : ['entriesTemplate'],
     showEntry          : ['showEntryTemplate'],
     newEntry           : ['newEntryTemplate'],
     editEntry          : ['editEntryTemplate'],
@@ -43,13 +43,17 @@
       });
     }
 
-    // Ladda in inlägg, all = alla, private = inloggad användare
+    // Ladda in inlägg, all = alla, private = inloggad användare, 
     loadEntries(entries='all') {
       const target = document.querySelector('#entriesListing');
       let url, title;
       if (entries === 'private') {
         url = '/entries?user='+sessionStorage.getItem('userID')+'&order=desc';
         title = 'Mina inlägg';
+      }
+      else if (entries === 'search') {
+        url = '/entries?search='+sessionStorage.getItem('searchString')+'&order=desc';
+        title = 'Sökresultat';
       }
       else {
         url = '/entries?order=desc';
@@ -59,10 +63,7 @@
       // Skapa rubrik
       const heading = document.createElement('h2');
       heading.textContent = title;
-      fragment.append(heading);
-      
-      // Skapa sökruta ------------------------------------!
-      
+      fragment.append(heading);      
       // Hämta och läs in inlägg
       fetch(url)
         .then(response => response.ok ? response.json() : new Error(response.statusText))
@@ -142,13 +143,15 @@
  
   // Funktion för att uppdatera eventlisteners
   function updateEventListeners() {
-    // Login - Logoff
+    // Login + Logoff
     const loginForm = document.querySelector('#loginForm');
     if (loginForm) loginForm.addEventListener('submit', login);
     const logout = document.querySelector('#logoff');
     if (logout) logout.addEventListener('click' , logoff);
 
-    // Menyval
+    // Logo + Menyval
+    const logo = document.querySelector('#logo');
+    if (logo) logo.addEventListener('click', loadAllEntries);
     const navAllEntries = document.querySelector('#navAllEntries');
     if (navAllEntries) navAllEntries.addEventListener('click', loadAllEntries);
     const navPrivateEntries = document.querySelector('#navPrivateEntries');
@@ -208,7 +211,7 @@
 
   // Loginfunktion
   function login(e) {
-    e.preventDefault();
+    // e.preventDefault();
     const formData = new FormData(loginForm);
     fetch('/api/login',{
       method : 'POST',
