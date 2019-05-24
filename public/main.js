@@ -1,7 +1,7 @@
 (function(){
   // Knyt templates till views
   const views = {
-    headerLoggedIn     : ['logoTemplate','searchTemplate','navTemplate','memberLogoutTemplate'],
+    headerLoggedIn     : ['logoTemplate','memberLogoutTemplate','navTemplate','searchTemplate'],
     headerNotLoggedIn  : ['logoTemplate','searchTemplate'],
     entriesNotLoggedIn : ['loginFormTemplate','registerFormTemplate','entriesTemplate'],
     entriesLoggedIn    : ['entriesTemplate'],
@@ -21,19 +21,17 @@
       view.forEach(template => {
         // Hämta template
         const templateMarkup = document.querySelector('#'+template).innerHTML;
-        
-        // Skapa div och läs in innehållet från template
-        const content = document.createElement('div');
-        content.innerHTML = templateMarkup;
-        
+        // Läs in innehållet från template
+        const content = document.createElement('template');
+        content.innerHTML = templateMarkup;       
         // Skriva ut innehållet i target
-        target.append(content);
+        target.append(content.content);
       });
       updateEventListeners();
     }
   }
 
-  // View för flera inlägg
+  // Views för inlägg
   class EntryView extends BaseView {
     // Bestäm view baserat på om man är inloggad eller ej
     loadView(entries='all') {
@@ -68,57 +66,69 @@
       fetch(url)
         .then(response => response.ok ? response.json() : new Error(response.statusText))
         .then(data => {
-          let count = 0; // Håller reda på när ny pagineringsvy ska skapas
-          let pageIndex = 1;  // Används för att numrera pagineringsvyer
-          let page = document.createElement('div'); // Skapar första pagineringsvyn
-          page.setAttribute('data-page', pageIndex);
-          data.forEach(post => {
-            // Kontrollera om vi uppnåt 20 inlägg, appenda isf aktuell page
-            // fragment och skapa sedan en ny
-            if (count === 5) {
-              count = 0; // Nollställ count
-              pageIndex++; // Öka på pageIndex
-              fragment.append(page);
-              page = document.createElement('div'); // Skapar nästa pagineringsvy
-              page.setAttribute('data-page', pageIndex);
-              page.classList.add('entries-hidden');
-            } 
-            // Skapa HTML för aktuell entry
-            const entry = document.createElement('div');
-            const heading = document.createElement('h3');
-            const posted = document.createElement('p');
-            const content = document.createElement('p');
-            entry.classList.add('post');
-            entry.setAttribute('data-entryid',post.entryID);
-            heading.textContent = post.title;
-            posted.textContent = post.createdAt +' - '+ post.username;
-            content.textContent = post.content.length > 100 
+          if (data.length > 0) {
+
+            let count = 0; // Håller reda på när ny pagineringsvy ska skapas
+            let pageIndex = 1;  // Används för att numrera pagineringsvyer
+            let page = document.createElement('div'); // Skapar första pagineringsvyn
+            page.setAttribute('data-page', pageIndex);
+            data.forEach(post => {
+              // Kontrollera om vi uppnåt 20 inlägg, appenda isf aktuell page
+              // fragment och skapa sedan en ny
+              if (count === 20) {
+                count = 0; // Nollställ count
+                pageIndex++; // Öka på pageIndex
+                fragment.append(page);
+                page = document.createElement('div'); // Skapar nästa pagineringsvy
+                page.setAttribute('data-page', pageIndex);
+                page.classList.add('entries-hidden');
+              } 
+              // Skapa HTML för aktuell entry
+              const entry = document.createElement('div');
+              const heading = document.createElement('h3');
+              const posted = document.createElement('p');
+              const content = document.createElement('p');
+              entry.classList.add('post');
+              entry.setAttribute('data-entryid',post.entryID);
+              heading.textContent = post.title;
+              posted.textContent = post.createdAt +' - '+ post.username;
+              content.textContent = post.content.length > 100 
               ? post.content.substring(0,100)+' ...' 
               : post.content;
-            entry.append(heading,posted,content);
-            // Appenda entry på aktuell page
-            page.append(entry);
-            // Räkna inlägget
-            count++;
-          });
-          // Skapa pagineringslänkar
-          const paging = document.createElement('ul'); // Lista för paginglänkar
-          paging.classList.add('entries-paging');
-          for (let i = 1; i <= pageIndex; i++) {
-            const listItem = document.createElement('li');
-            const pagingLink = document.createElement('a');
-            pagingLink.setAttribute('href','');
-            pagingLink.setAttribute('data-page', i);
-            pagingLink.textContent = i;
-            if (i === 1) pagingLink.classList.add('entries-paging-active');
-            listItem.append(pagingLink);
-            paging.append(listItem);
+              entry.append(heading,posted,content);
+              // Appenda entry på aktuell page
+              page.append(entry);
+              // Räkna inlägget
+              count++;
+            });
+            // Skapa pagineringslänkar
+            const paging = document.createElement('ul'); // Lista för paginglänkar
+            paging.classList.add('entries-paging');
+            for (let i = 1; i <= pageIndex; i++) {
+              const listItem = document.createElement('li');
+              const pagingLink = document.createElement('a');
+              pagingLink.setAttribute('href','');
+              pagingLink.setAttribute('data-page', i);
+              pagingLink.textContent = i;
+              if (i === 1) pagingLink.classList.add('entries-paging-active');
+              listItem.append(pagingLink);
+              paging.append(listItem);
+            }
+            // Appenda sista page och paginering
+            fragment.append(page,paging);
           }
-          // Appenda sista page och paginering, skriv sedan ut allt
-          fragment.append(page,paging);
+          else {
+            // Om inga inlägg hittas visa det
+            const noEntries = document.createElement('div');
+            noEntries.classList.add('no-entries');
+            noEntries.textContent = 'Inga inlägg hittades.';
+            fragment.append(noEntries);
+          }
+          // Skriv ut allt på sidan
           target.innerHTML = '';
           target.append(fragment);
-        });
+        })
+        .catch(error => console.error(error));
     }
 
     showEntry(id) {
@@ -159,9 +169,14 @@
     const navNewEntry = document.querySelector('#navNewEntry');
     if (navNewEntry) navNewEntry.addEventListener('click', writeNewEntry);
     
+    // Sök
+    const searchEntries = document.querySelector('#searchEntries');
+    if (searchEntries) searchEntries.addEventListener('submit', searchAllEntries);
+    const searchString = document.querySelector('#searchString');
+
     // Entry visning/redigering
     const entriesListing = document.querySelector('#entriesListing');
-    if (entriesListing) document.addEventListener('click', handleEntriesEvents);
+    if (entriesListing) entriesListing.addEventListener('click', handleEntriesEvents);
   }
 
   // Funktioner för att ladda vyer
@@ -175,6 +190,14 @@
     e.preventDefault();
     (new EntryView).loadView('private');
     sessionStorage.setItem('activeView', 'privateEntries');
+  }
+
+  function searchAllEntries(e) {
+    e.preventDefault();
+    (new EntryView).loadView('search', searchString.value);
+    sessionStorage.setItem('activeView', 'searchEntries');
+    sessionStorage.setItem('searchString', searchString.value);
+    e.target.reset();
   }
 
   function writeNewEntry(e) {
@@ -195,11 +218,13 @@
     // Klick på paging byter sida i pagingvyn
     else if (e.target.matches('.entries-paging a')) {
       const pages = document.querySelectorAll('#entriesListing > div');
+      // Visar vald vy, gömmer resten
       pages.forEach(el => {
         (el.dataset.page === e.target.dataset.page)
           ? el.classList.remove('entries-hidden')
           : el.classList.add('entries-hidden');
       });
+      // Markerar vald vy i pagingnavigationen
       const paging = document.querySelectorAll('.entries-paging a');
       paging.forEach(el => {
         (el.dataset.page === e.target.dataset.page)
@@ -211,7 +236,7 @@
 
   // Loginfunktion
   function login(e) {
-    // e.preventDefault();
+    e.preventDefault();
     const formData = new FormData(loginForm);
     fetch('/api/login',{
       method : 'POST',

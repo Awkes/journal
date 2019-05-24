@@ -2,13 +2,15 @@
 
 class Entry extends Mapper {
   // Hämta inlägg
-  public function getEntries($user,$order,$limit) {   
+  public function getEntries($user,$order,$limit,$search) {   
     $s = $this->db->prepare("
       SELECT entries.*, users.username FROM entries 
       JOIN users ON users.userID = entries.createdBy
-      $user ORDER BY createdAt $order $limit
+      WHERE (title LIKE :search OR content LIKE :search)
+      $user
+      ORDER BY createdAt $order $limit
     ");
-    $s->execute();
+    $s->execute([':search'=>"%$search%"]);
     return $s->fetchAll(PDO::FETCH_ASSOC);
   }
   
