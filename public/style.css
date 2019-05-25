@@ -98,10 +98,6 @@ table h3{
     margin-right: 10px;
 }
 
-#user td, #allUsers td{
-    text-align: left;
-}
-
 #allUsers{
     padding: 0 0 20px 10px;
 }
@@ -141,10 +137,6 @@ form{
 #loggedInMember{
     font-size: 1.2em;
     margin-bottom: 10px;
-}
-
-td{
-    text-align: right;
 }
 
 #logreg {
@@ -209,11 +201,7 @@ hr{
     border: 1px solid black;
 }
 
-#allUsers td{
-    width: 33%;
-    text-align: left;
-    font-weight: bold;
-}
+#allUsers tr:nth-child(odd){ background-color: rgb(216, 216, 216); }
 
 #user{
     background-color: rgb(216, 216, 216);
@@ -240,8 +228,8 @@ hr{
   font-weight: bold;
 }
 
-/* Header > 850px */
-@media(min-width: 850px) {
+/* Header > 1080px */
+@media(min-width: 1080px) {
   header { grid-template-columns: 2fr 1fr 1fr 2fr; }
   #logo { 
     margin: initial; 
