@@ -199,7 +199,7 @@
   else if (sessionStorage.getItem('activeView') === 'allUsers') (new UserView).listAllUsers(views.listAllUsers);
   else (new EntryView).loadView();
  
-  // Funktion för att uppdatera eventlisteners
+  // Funktion för att uppdatera selectorer och eventlisteners
   function updateEventListeners() {
     // Login + Logoff + Register
     const loginForm = document.querySelector('#loginForm');
@@ -208,6 +208,8 @@
     if (logout) logout.addEventListener('click' , logoff);
     const registerForm = document.querySelector('#registerForm');
     if (registerForm) registerForm.addEventListener('submit' , registerUser);
+    const loggedInMember = document.querySelector('#loggedInMember');
+    if (loggedInMember) loggedInMember.textContent = sessionStorage.getItem('username');
 
     // Logo + Menyval
     const logo = document.querySelector('#logo');
