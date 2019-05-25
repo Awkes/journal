@@ -15,7 +15,7 @@ Repo: https://github.com/Awkes/journal.git
 
 | POST               | Beskrivning |
 | ---               | --- |
-| /api/login        | Logga in [BODY = user, pass] |
+| /api/login        | Logga in [BODY = username, password] |
 
   
 ## USERS  
@@ -27,7 +27,7 @@ Repo: https://github.com/Awkes/journal.git
   
 | POST              | Beskrivning |
 | ---               | ---
-| /user             | Skapa ny användare [BODY = user, pass] |
+| /user             | Skapa ny användare [BODY = username, password] |
   
 ## ENTRIES  
   

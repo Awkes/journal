@@ -8,7 +8,8 @@
     showEntry          : ['showEntryTemplate'],
     newEntry           : ['newEntryTemplate'],
     editEntry          : ['editEntryTemplate'],
-    users              : ['membersTemplate']
+    users              : ['membersTemplate'],
+    userRegistered     : ['loginFormTemplate','memberSuccessTemplate','entriesTemplate']
   }
 
   // Basic View
@@ -33,10 +34,12 @@
 
   // Views för inlägg
   class EntryView extends BaseView {
-    // Bestäm view baserat på om man är inloggad eller ej
-    loadView(entries='all') {
+    // Bestäm view baserat på om man är inloggad, utloggad eller nyregistrerad
+    loadView(entries='all',registered=false) {
       checkLogin().then(data => {
-        this.renderView(data.loggedIn ? views.entriesLoggedIn : views.entriesNotLoggedIn);
+        registered
+          ? this.renderView(views.userRegistered)
+          : this.renderView(data.loggedIn ? views.entriesLoggedIn : views.entriesNotLoggedIn);
         this.loadEntries(entries);
       });
     }
@@ -198,11 +201,13 @@
  
   // Funktion för att uppdatera eventlisteners
   function updateEventListeners() {
-    // Login + Logoff
+    // Login + Logoff + Register
     const loginForm = document.querySelector('#loginForm');
     if (loginForm) loginForm.addEventListener('submit', login);
     const logout = document.querySelector('#logoff');
     if (logout) logout.addEventListener('click' , logoff);
+    const registerForm = document.querySelector('#registerForm');
+    if (registerForm) registerForm.addEventListener('submit' , registerUser);
 
     // Logo + Menyval
     const logo = document.querySelector('#logo');
@@ -287,7 +292,7 @@
     sessionStorage.setItem('activeView', 'allUsers');
   }
 
-  // Loginfunktion
+  // Login
   function login(e) {
     e.preventDefault();
     const formData = new FormData(loginForm);
@@ -310,8 +315,8 @@
       sessionStorage.setItem('username',data.username);
     });
   }
-  
-  // Logoffunktion
+
+  // Logoff
   function logoff(e) {
     e.preventDefault();
     fetch('/api/logoff')
@@ -328,6 +333,23 @@
     return fetch('/api/ping')
       .then(response => response.ok ? response.json() : new Error(response.statusText))
       .catch(error => console.error(error));
+  }
+
+  // Registrera användare
+  function registerUser(e) {
+    e.preventDefault();
+    const formData = new FormData(registerForm);
+    fetch('/user',{
+      method : 'POST',
+      body   : formData
+    })
+    .then(response => response.ok ? response.json() : new Error(response.statusText))
+    .then(data => {
+      !data.success
+        ? document.querySelector('#registerFormError').textContent = data.message
+        : (new EntryView).loadView('all',true);
+    })
+    .catch(error => console.error(error));
   }
 
 })(); // Namespace end

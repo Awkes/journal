@@ -77,14 +77,12 @@ table{
     padding: 10px 10px 10px 0;
 }
 
-table h3{
-    text-align: left;
-}
-
 .loginDiv, .registerDiv{
     width: 100%;
     margin: 0;
 }
+
+#loginFormError, #registerFormError{ color: #F00; }
 
 #loginTable, #registerTable, #memberSuccess, #newEntry, #editEntry{
     border-top: 1px solid black;
