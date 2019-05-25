@@ -20,9 +20,9 @@ return function ($app) {
   $app->POST('/user', function ($request, $response) {
     $data = $request->getParsedBody();
 
-    if (isset($data['user']) && isset($data['pass'])) {
+    if (isset($data['username']) && isset($data['password'])) {
       $user = new User($this->db);
-      return $response->withJson($user->newUser($data['user'],$data['pass']));
+      return $response->withJson($user->newUser($data['username'],$data['password']));
     } 
     else {
       return $response->withStatus(400);
