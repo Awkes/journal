@@ -59,7 +59,7 @@
       }
       let fragment = document.createDocumentFragment();
       // Skapa rubrik
-      const heading = document.createElement('h2');
+      const heading = document.createElement('h1');
       heading.textContent = title;
       fragment.append(heading);      
       // Hämta och läs in inlägg
@@ -67,7 +67,6 @@
         .then(response => response.ok ? response.json() : new Error(response.statusText))
         .then(data => {
           if (data.length > 0) {
-
             let count = 0; // Håller reda på när ny pagineringsvy ska skapas
             let pageIndex = 1;  // Används för att numrera pagineringsvyer
             let page = document.createElement('div'); // Skapar första pagineringsvyn
@@ -140,6 +139,51 @@
     }
   }
 
+  // Views för users
+  class UserView extends BaseView {
+    listAllUsers() {
+      this.renderView(views.users);
+      const target = document.querySelector('#allUsers');
+      let fragment = document.createDocumentFragment();
+      // Skapa rubrik
+      const thead = document.createElement('thead');
+      const tr = document.createElement('tr');
+      const th = document.createElement('th');
+      const heading = document.createElement('h1');
+      heading.textContent = 'Registrerade medlemmar';
+      th.append(heading);
+      tr.append(th);
+      thead.append(th);
+      fragment.append(thead);
+      // Hämta och läs in alla användare
+      fetch('/users')
+        .then(response => response.ok ? response.json() : new Error(response.statusText))
+        .then(data => {
+          if (data.length > 0) {
+            data.forEach(user => {
+              // Skapa HTML för aktuell user
+              const tr = document.createElement('tr');
+              const td = document.createElement('td');
+              td.textContent = user['username'];
+              tr.append(td);
+              fragment.append(tr);
+            });
+          }
+          else {
+            // Om inga users finns visa detta
+            const noUsers = document.createElement('div');
+            noUsers.classList.add('no-entries');
+            noEntries.textContent = 'Inga användare hittades.';
+            fragment.append(noEntries);
+          }
+          // Skriv ut allt på sidan
+          target.innerHTML = '';
+          target.append(fragment);
+        })
+        .catch(error => console.error(error));
+    }
+  }
+
   // Skriv ut meny och utloggningsknapp om vi är inloggad
   checkLogin().then(data => {
     (new BaseView).renderView(data.loggedIn ? views.headerLoggedIn : views.headerNotLoggedIn, 'header');
@@ -149,6 +193,7 @@
   if (sessionStorage.getItem('activeView') === 'privateEntries') (new EntryView).loadView('private');
   else if (sessionStorage.getItem('activeView') === 'showEntry') (new EntryView).showEntry();
   else if (sessionStorage.getItem('activeView') === 'newEntry') (new EntryView).renderView(views.newEntry);
+  else if (sessionStorage.getItem('activeView') === 'allUsers') (new UserView).listAllUsers(views.listAllUsers);
   else (new EntryView).loadView();
  
   // Funktion för att uppdatera eventlisteners
@@ -168,6 +213,8 @@
     if (navPrivateEntries) navPrivateEntries.addEventListener('click', loadPrivateEntries);
     const navNewEntry = document.querySelector('#navNewEntry');
     if (navNewEntry) navNewEntry.addEventListener('click', writeNewEntry);
+    const navAllUsers = document.querySelector('#navAllUsers');
+    if (navAllUsers) navAllUsers.addEventListener('click', listAllUsers);
     
     // Sök
     const searchEntries = document.querySelector('#searchEntries');
@@ -232,6 +279,12 @@
           : el.classList.remove('entries-paging-active');
       });
     }
+  }
+
+  function listAllUsers(e) {
+    e.preventDefault();
+    (new UserView).listAllUsers();
+    sessionStorage.setItem('activeView', 'allUsers');
   }
 
   // Loginfunktion
