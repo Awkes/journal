@@ -84,7 +84,7 @@
                 fragment.append(page);
                 page = document.createElement('div'); // Skapar nästa pagineringsvy
                 page.setAttribute('data-page', pageIndex);
-                page.classList.add('entries-hidden');
+                page.classList.add('paging-hidden');
               } 
               // Skapa HTML för aktuell entry
               const entry = document.createElement('div');
@@ -106,14 +106,14 @@
             });
             // Skapa pagineringslänkar
             const paging = document.createElement('ul'); // Lista för paginglänkar
-            paging.classList.add('entries-paging');
+            paging.classList.add('paging');
             for (let i = 1; i <= pageIndex; i++) {
               const listItem = document.createElement('li');
               const pagingLink = document.createElement('a');
               pagingLink.setAttribute('href','');
               pagingLink.setAttribute('data-page', i);
               pagingLink.textContent = i;
-              if (i === 1) pagingLink.classList.add('entries-paging-active');
+              if (i === 1) pagingLink.classList.add('paging-active');
               listItem.append(pagingLink);
               paging.append(listItem);
             }
@@ -197,7 +197,7 @@
                 fragment.append(page);
                 page = document.createElement('div'); // Skapar nästa pagineringsvy
                 page.setAttribute('data-page', pageIndex);
-                page.classList.add('entries-hidden');
+                page.classList.add('paging-hidden');
               } 
               // Skapa kommentaren
               const comment = document.createElement('div');
@@ -231,14 +231,14 @@
             });
             // Skapa pagineringslänkar
             const paging = document.createElement('ul'); // Lista för paginglänkar
-            paging.classList.add('entries-paging');
+            paging.classList.add('paging');
             for (let i = 1; i <= pageIndex; i++) {
               const listItem = document.createElement('li');
               const pagingLink = document.createElement('a');
               pagingLink.setAttribute('href','');
               pagingLink.setAttribute('data-page', i);
               pagingLink.textContent = i;
-              if (i === 1) pagingLink.classList.add('entries-paging-active');
+              if (i === 1) pagingLink.classList.add('paging-active');
               listItem.append(pagingLink);
               paging.append(listItem);
             }
@@ -396,7 +396,7 @@
       sessionStorage.setItem('entryID', entryID);
     }
     // Klick på paging byter sida i pagingvyn
-    else if (e.target.matches('.entries-paging a')) {
+    else if (e.target.matches('.paging a')) {
       const pages = document.querySelectorAll('#entriesListing > div');
       pagingViewer(pages,e);
     }
@@ -409,7 +409,7 @@
     // redigera
 
     // Klick på paging byter sida i pagingvyn
-    if (e.target.matches('.entries-paging a')); {
+    if (e.target.matches('.paging a')); {
       const pages = document.querySelectorAll('#showEntryComments > div');
       pagingViewer(pages,e);
     }
@@ -419,15 +419,15 @@
     // Visar vald vy, gömmer resten
     pages.forEach(el => {
       (el.dataset.page === e.target.dataset.page)
-        ? el.classList.remove('entries-hidden')
-        : el.classList.add('entries-hidden');
+        ? el.classList.remove('paging-hidden')
+        : el.classList.add('paging-hidden');
     });
     // Markerar vald vy i pagingnavigationen
-    const paging = document.querySelectorAll('.entries-paging a');
+    const paging = document.querySelectorAll('.paging a');
     paging.forEach(el => {
       (el.dataset.page === e.target.dataset.page)
-        ? el.classList.add('entries-paging-active')
-        : el.classList.remove('entries-paging-active');
+        ? el.classList.add('paging-active')
+        : el.classList.remove('paging-active');
     });
   }
 

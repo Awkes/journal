@@ -226,10 +226,10 @@ hr{
 #showEntryCommentForm button { grid-column: 2/3; }
 
 /* Paginering */
-.entries-hidden { display: none; }
-.entries-paging { list-style-type: none; }
-.entries-paging li { display: inline-block; }
-.entries-paging a { 
+.paging-hidden { display: none; }
+.paging { list-style-type: none; }
+.paging li { display: inline-block; }
+.paging a { 
     display: block; 
     border: 1px solid #000;
     width: 2em;
@@ -239,7 +239,7 @@ hr{
     text-decoration: none;
     color: #000;
 }
-.entries-paging-active { 
+.paging-active { 
   background-color: rgb(216, 216, 216); 
   font-weight: bold;
 }
