@@ -8,37 +8,27 @@ class Like extends Mapper {
     return $s->fetch(PDO::FETCH_ASSOC);
   }
 
-  // Kontrollera om användare redan like:at en entry
+  // Kontrollera om användare redan gillar en entry
   private function checkLike($id) {
     $s = $this->db->prepare("SELECT * FROM likes WHERE entryID=? AND userID=?");
     $s->execute([$id,$_SESSION['userID']]);
     return $s->fetch(PDO::FETCH_ASSOC);
   }
 
-  // Ny like
-  public function newLike($id) {
-    $success = false;
+  // Gilla / Ogilla
+  public function likeDislike($id) {
+    $action = 'like';
     if (!$this->checkLike($id)) {
       $s = $this->db->prepare("INSERT INTO likes (entryID, userID) VALUES (?, ?)");
-      $success = $s->execute([$id,$_SESSION['userID']]);
     }
-    return array(
-      'entryID'=>$id,
-      'action'=>'like',
-      'success'=>$success
-    );
-  }
-  
-  // Ta bort like
-  public function delLike($id) {
-    $success = false;
-    if ($this->checkLike($id)) {
+    else {
       $s = $this->db->prepare("DELETE FROM likes WHERE entryID=? AND userID=?");
-      $success = $s->execute([$id,$_SESSION['userID']]);
+      $action = 'dislike';
     }
+    $success = $s->execute([$id,$_SESSION['userID']]);
     return array(
       'entryID'=>$id,
-      'action'=>'dislike',
+      'action'=>$action,
       'success'=>$success
     );
   }

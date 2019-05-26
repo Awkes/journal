@@ -52,17 +52,10 @@ Repo: https://github.com/Awkes/journal.git
 
 ## LIKES  
   
-| GET               | Beskrivning |
-| ---               | --- |
-| /likes/{id}       | Räkna likes för entry med ID {id} |
-  
-| POST              | Beskrivning |
-| ---               | --- |  
-| /like/{id}        |Like:a ett inlägg med ID {id} |
-  
-| DELETE            | Beskrivning |
-| ---               | --- |  
-| /like/{id}        | Dislike:a ett inlägg med ID {id} |
+| GET                 | Beskrivning |
+| ---                 | --- |
+| /likes/{id}         | Räkna likes för entry med ID {id} |
+| /like/{id}          | Gilla/ogilla ett inlägg med ID {id} |
   
 ## COMMENTS
 
