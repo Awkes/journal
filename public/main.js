@@ -376,7 +376,7 @@
 
   function searchAllEntries(e) {
     e.preventDefault();
-    (new EntryView).loadView('search', searchString.value);
+    (new EntryView).loadView('search', false);
     sessionStorage.setItem('activeView', 'searchEntries');
     sessionStorage.setItem('searchString', searchString.value);
     e.target.reset();
