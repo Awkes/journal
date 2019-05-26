@@ -4,7 +4,7 @@ return function ($app) {
   // Register auth middleware
   $auth = require __DIR__ . '/../middlewares/auth.php';
 
-  // GET route som hämtar inlägg
+  // GET route som hämtar flera inlägg
   $app->get('/entries', function ($request, $response) {  
     $entry = new Entry($this->db);
     // Läs in eventuella qrystrings
@@ -22,6 +22,12 @@ return function ($app) {
     $search = isset($qryString['search']) ? $qryString['search'] : '';
 
     return $response->withJson($entry->getEntries($user,$order,$limit,$search));
+  });
+
+  // GET route som hämtar ett inlägg.
+  $app->get('/entry/{id}', function ($request, $response, $args) {
+    $entry = new Entry($this->db);
+    return $response->withJson($entry->getEntry($args['id']));
   });
 
   // POST route som sparar ett nytt inlägg för en viss användare.

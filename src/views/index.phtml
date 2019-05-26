@@ -126,6 +126,11 @@
     <template id="showEntryTemplate">
       <div id="showEntry">
         <h1 id="showEntryTitle">Inläggsrubrik</h1>
+        <div>
+          <span id="showEntryDate"></span>
+          -
+          <span id="showEntryUser"></span>
+        </div>
         <div class="post">
           <p id="showEntryContent">Inläggstext Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores aperiam, nulla alias fugit nobis aliquam quis dolor repudiandae ad ut sequi eveniet necessitatibus adipisci tempore. Adipisci assumenda natus minima, error tempora id sit quae, nostrum saepe tenetur omnis amet vel. Voluptatum tempore error optio aperiam esse tenetur explicabo commodi. Doloribus?</p>
         </div>
@@ -143,10 +148,9 @@
         </div>
       </div>
       <hr>
-      <h2>Kommentera</h2>
+      <h2><label for="showEntryComment">Kommentera</label></h2>
       <div>
         <form id="showEntryCommentForm">
-          <label for="showEntryComment">Kommentar</label>
           <textarea id="showEntryComment" name="comment"></textarea>
           <button type="submit">Kommentera</button>
         </form>

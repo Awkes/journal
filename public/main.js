@@ -135,6 +135,31 @@
 
     showEntry(id) {
       this.renderView(views.showEntry);
+      // Hämta inlägg
+      fetch('/entry/'+id)
+        .then(response => response.ok ? response.json() : new Error(response.statusText))
+        .then(data => {
+          // Skriv ut inlägg
+          const titleElement = document.querySelector('#showEntryTitle');
+          const dateElement = document.querySelector('#showEntryDate');
+          const userElement = document.querySelector('#showEntryUser');
+          const contentElement = document.querySelector('#showEntryContent');
+          titleElement.textContent = data.title;
+          dateElement.textContent = data.createdAt;
+          userElement.textContent = data.username;
+          contentElement.textContent = data.content;
+
+          // Hämta och skriv ut likes
+          fetch('/likes/'+id)
+            .then(response => response.ok ? response.json() : new Error(response.statusText))
+            .then(data => {
+              const likeCountElement = document.querySelector('#showEntryLikes');
+              likeCountElement.textContent = data.likes;
+            })
+            .catch(error => console.error(error));
+        })
+        .catch(error => console.error(error));
+
     }
     
     editEntry() {
@@ -194,7 +219,7 @@
 
   // Skriv ut main views
   if (sessionStorage.getItem('activeView') === 'privateEntries') (new EntryView).loadView('private');
-  else if (sessionStorage.getItem('activeView') === 'showEntry') (new EntryView).showEntry();
+  else if (sessionStorage.getItem('activeView') === 'showEntry') (new EntryView).showEntry(sessionStorage.getItem('entryID'));
   else if (sessionStorage.getItem('activeView') === 'newEntry') (new EntryView).renderView(views.newEntry);
   else if (sessionStorage.getItem('activeView') === 'allUsers') (new UserView).listAllUsers(views.listAllUsers);
   else (new EntryView).loadView();

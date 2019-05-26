@@ -223,6 +223,7 @@ hr{
   grid-column: 1/3;
 }
 #showEntryCommentForm button { grid-column: 2/3; }
+#showEntry .post, #showEntryComments .post { cursor: default; }
 
 
 /* Paginering */
