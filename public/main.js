@@ -357,6 +357,10 @@
     // Entry comments visning/redigering
     const showEntryComments = document.querySelector('#showEntryComments');
     if (showEntryComments)  showEntryComments.addEventListener('click', handleEntryCommentsEvents);
+
+    //New entry
+    const newEntryForm = document.querySelector('#newEntryForm');
+    if (newEntryForm) newEntryForm.addEventListener('submit', postNewEntry);
   }
 
   // Funktioner för att ladda vyer
@@ -496,5 +500,19 @@
     })
     .catch(error => console.error(error));
   }
-
+  function postNewEntry(e) {
+    e.preventDefault();
+    const formData = new FormData(newEntryForm);
+    fetch('/entry', {
+      method : 'POST',
+      body : formData
+    })
+    .then(response => response.ok ? response.json() : new Error(response.statustext))
+    .then(data => {
+      !data.success
+      ? document.querySelector('#newEntryMessage').textContent = data.message
+      : (new EntryView).loadView('private');  
+    })
+    
+  }
 })(); // Namespace end

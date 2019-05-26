@@ -27,15 +27,22 @@ class Entry extends Mapper {
 
   // Skapa nytt inlägg
   public function newEntry($title,$content) {
-    $s = $this->db->prepare('INSERT INTO entries (createdBy, title, content, createdAt) VALUES (?, ?, ?, NOW())');
-    $success = $s->execute([$_SESSION['userID'],$title,$content]);
-    return array(
-      "userID"=>$_SESSION['userID'],
-      "title"=>$title,
-      "content"=>$content,
-      "action"=>'new entry',
-      "success"=>$success
-    );
+    if(strlen($title) > 1 && strlen($content) > 1){
+      $s = $this->db->prepare('INSERT INTO entries (createdBy, title, content, createdAt) VALUES (?, ?, ?, NOW())');
+      $success = $s->execute([$_SESSION['userID'],$title,$content]);
+      return array(
+        "userID"=>$_SESSION['userID'],
+        "title"=>$title,
+        "content"=>$content,
+        "action"=>'new entry',
+        "success"=>$success
+      );
+    }else {
+      return array(
+        "succes" => false,
+        "message" => 'Tomma input fält'
+      );
+    }
   }
   
   // Uppdatera inlägg
