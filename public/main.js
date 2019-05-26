@@ -168,12 +168,9 @@
 
     getLikes(id) {
       fetch('/likes/'+id)
-      .then(response => response.ok ? response.json() : new Error(response.statusText))
-      .then(data => {
-        const likeCountElement = document.querySelector('#showEntryLikes');
-        likeCountElement.textContent = data.likes;
-      })
-      .catch(error => console.error(error));
+       .then(response => response.ok ? response.json() : new Error(response.statusText))
+       .then(data => { showEntryLikes.textContent = data.likes; })
+       .catch(error => console.error(error));
     }
 
     getComments(id,loggedIn) {
@@ -354,6 +351,11 @@
     const entriesListing = document.querySelector('#entriesListing');
     if (entriesListing) entriesListing.addEventListener('click', handleEntriesEvents);
 
+    // Entry gilla/redigera/ta bort
+    const showEntryLike = document.querySelector('#showEntryLike');
+    const showEntryLikes = document.querySelector('#showEntryLikes');
+    if (showEntryLike) showEntryLike.addEventListener('click', likeDislike)
+
     // Entry comments visning/redigering
     const showEntryComments = document.querySelector('#showEntryComments');
     if (showEntryComments)  showEntryComments.addEventListener('click', handleEntryCommentsEvents);
@@ -400,6 +402,14 @@
       const pages = document.querySelectorAll('#entriesListing > div');
       pagingViewer(pages,e);
     }
+  }
+
+  function likeDislike(e) {
+    e.preventDefault();
+    fetch('/like/'+sessionStorage.getItem('entryID'))
+      .then(response => response.ok ? response.json() : new Error(response.statusText))
+      .then(data => { (new EntryView).getLikes(data.entryID) })
+      .catch(error => console.error(error));
   }
 
   function handleEntryCommentsEvents(e) {
