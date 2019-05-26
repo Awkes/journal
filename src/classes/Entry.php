@@ -13,7 +13,18 @@ class Entry extends Mapper {
     $s->execute([':search'=>"%$search%"]);
     return $s->fetchAll(PDO::FETCH_ASSOC);
   }
-  
+
+  // Hämta ett inlägg
+  public function getEntry($id) {
+    $s = $this->db->prepare("
+      SELECT entries.*, users.username FROM entries
+      JOIN users ON users.userID = entries.createdBy
+      WHERE entryID=?
+    ");
+    $success = $s->execute([$id]);
+    return $s->fetch(PDO::FETCH_ASSOC);
+  }
+
   // Skapa nytt inlägg
   public function newEntry($title,$content) {
     $s = $this->db->prepare('INSERT INTO entries (createdBy, title, content, createdAt) VALUES (?, ?, ?, NOW())');

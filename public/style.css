@@ -67,8 +67,9 @@ footer{
     background-color: rgb(216, 216, 216);
     padding: 10px;
     margin: 0 10px 20px 0;
-    cursor: pointer;
 }
+
+#entriesListing .post { cursor: pointer; }
 
 table{
     text-align: right;
@@ -195,7 +196,7 @@ main h1{
 }
 
 hr{
-    margin: 5px 0px;;
+    margin: 5px 0 20px 0;;
     border: 1px solid black;
 }
 
@@ -207,11 +208,28 @@ hr{
     padding: 0 10px 0 10px;
 }
 
+/* Visa inlägg */
+
+#showEntryOptions, .showEntryCommentBottom {
+  display: flex;
+  justify-content: space-between;
+}
+#showEntryCommentForm { 
+  margin :0; 
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#showEntryComment { 
+  height: 6em; 
+  grid-column: 1/3;
+}
+#showEntryCommentForm button { grid-column: 2/3; }
+
 /* Paginering */
-.entries-hidden { display: none; }
-.entries-paging { list-style-type: none; }
-.entries-paging li { display: inline-block; }
-.entries-paging a { 
+.paging-hidden { display: none; }
+.paging { list-style-type: none; }
+.paging li { display: inline-block; }
+.paging a { 
     display: block; 
     border: 1px solid #000;
     width: 2em;
@@ -221,7 +239,7 @@ hr{
     text-decoration: none;
     color: #000;
 }
-.entries-paging-active { 
+.paging-active { 
   background-color: rgb(216, 216, 216); 
   font-weight: bold;
 }
