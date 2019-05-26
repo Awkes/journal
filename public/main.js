@@ -515,9 +515,10 @@
     })
     .then(response => response.ok ? response.json() : new Error(response.statustext))
     .then(data => {
+      console.log(data)
       !data.success
-      ? document.querySelector('#newEntryMessage').textContent = data.message
-      : (new EntryView).loadView('private');  
+        ? document.querySelector('#newEntryMessage').textContent = data.message
+        : (new EntryView).showEntry(data.entryID);  
     })
     
   }
