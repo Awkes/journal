@@ -125,10 +125,50 @@
  
     <template id="showEntryTemplate">
       <div id="showEntry">
-        <h1>Visa inlägg</h1>
-        <h2>Inläggsrubrik</h2>
-        <p>Inläggstext</p>
+        <h1 id="showEntryTitle">Inläggsrubrik</h1>
+        <div class="post">
+          <p id="showEntryContent">Inläggstext Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores aperiam, nulla alias fugit nobis aliquam quis dolor repudiandae ad ut sequi eveniet necessitatibus adipisci tempore. Adipisci assumenda natus minima, error tempora id sit quae, nostrum saepe tenetur omnis amet vel. Voluptatum tempore error optio aperiam esse tenetur explicabo commodi. Doloribus?</p>
+        </div>
+        <div id="showEntryOptions">
+          <div>
+            <span id="showEntryLikes">3</span>
+            &#128077;
+            <a href="" id="showEntryLike">Gilla</a>
+          </div>
+          <div>
+            <a href="" id="showEntryEdit">Redigera</a>
+            |
+            <a href="" id="showEntryDelete">Ta bort</a>
+          </div>
+        </div>
       </div>
+      <hr>
+      <h2>Kommentera</h2>
+      <div>
+        <form id="showEntryCommentForm">
+          <label for="showEntryComment">Kommentar</label>
+          <textarea id="showEntryComment" name="comment"></textarea>
+          <button type="submit">Kommentera</button>
+        </form>
+      </div>
+      
+      <hr>
+
+      <h2>Kommentarer</h2>
+      <div id="showEntryComments">
+        <div class="post">
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, cupiditate.</p>
+          <div class="showEntryCommentBottom">
+            <span id="showEntryCommentUser">användare</span>
+            <span>
+              <a href="" class="showEntryEditComment">Redigera</a>
+              <a href="" class="showEntryDeleteComment">Ta bort</a>
+            </span>
+          </div>
+        </div>
+        
+      </div>
+
     </template>
   
     <template id="newEntryTemplate">
