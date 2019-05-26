@@ -5,7 +5,11 @@ class Comments extends Mapper{
 
     public function getComments($entryID, $order, $limit){
 
-    $s = $this->db->prepare("SELECT * from comments WHERE entryID = :entryID ORDER BY createdAt {$order} {$limit}");
+        $s = $this->db->prepare("
+            SELECT comments.*, users.username FROM comments
+            JOIN users ON users.userID = comments.createdBy
+            WHERE entryID = :entryID ORDER BY createdAt {$order} {$limit}
+        ");
         $s->execute([
             ':entryID' => $entryID,
         ]); 
