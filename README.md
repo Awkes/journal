@@ -38,6 +38,7 @@ Repo: https://github.com/Awkes/journal.git
 | /entries?order=X  | Hämta inlägg sorterat i ordning X [ASC eller DESC (ASC är standard)] |
 | /entries?userID=X | Hämta inlägg från user med ID X. |
 | /entries?search=X | Söker på inlägg där X finns i titel eller innehåll. |
+| /entry/{id}        | Hämta ett inlägg med id {id} |
   
 (Alla querystrings går att kombinera)  
   
@@ -65,11 +66,11 @@ Repo: https://github.com/Awkes/journal.git
   
 ## COMMENTS
 
-| GET               | Beskrivning |
-| ---               | --- |
-| /comment          | Hämta alla inlägg |
-| /comment?limit=X  | Hämta X antal inlägg |
-| /comment?order=X  | Hämta inlägg sorterat i ordning X [ASC eller DESC (ASC är standard)] |
+| GET                    | Beskrivning |
+| ---                    | --- |
+| /comment/{entryID}          | Hämta alla kommentarer till {entryID} |
+| /comment/{entryID}?limit=X  | Hämta X antal kommentarer från {entryID} |
+| /comment/{entryID}?order=X  | Hämta kommentarer från {entryID} sorterat i ordning X [ASC eller DESC (ASC är standard)] |
 
 | POST              | Beskrivning |
 | ---               | --- |  

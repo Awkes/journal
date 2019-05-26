@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-  <title>MAD - Magnus Lidmyr, Andreas Åkerlöf, Daniel Hessling</title>
+  <title>MAD Journal</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -140,7 +140,7 @@
             &#128077;
             <a href="" id="showEntryLike">Gilla</a>
           </div>
-          <div>
+          <div id="showEntryLinks">
             <a href="" id="showEntryEdit">Redigera</a>
             |
             <a href="" id="showEntryDelete">Ta bort</a>
@@ -148,6 +148,9 @@
         </div>
       </div>
       <hr>
+    </template>
+
+    <template id="showEntryCommentTemplate">
       <h2><label for="showEntryComment">Kommentera</label></h2>
       <div>
         <form id="showEntryCommentForm">
@@ -155,24 +158,13 @@
           <button type="submit">Kommentera</button>
         </form>
       </div>
-      
       <hr>
+    </template>
 
+    <template id="showEntryCommentsTemplate">
       <h2>Kommentarer</h2>
-      <div id="showEntryComments">
-        <div class="post">
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, cupiditate.</p>
-          <div class="showEntryCommentBottom">
-            <span id="showEntryCommentUser">användare</span>
-            <span>
-              <a href="" class="showEntryEditComment">Redigera</a>
-              <a href="" class="showEntryDeleteComment">Ta bort</a>
-            </span>
-          </div>
-        </div>
-        
+      <div id="showEntryComments">       
       </div>
-
     </template>
   
     <template id="newEntryTemplate">
