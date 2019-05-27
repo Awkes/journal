@@ -21,13 +21,10 @@ return function ($app) {
   });
 
   $app->post('/comment', function($request, $response){
-
     $data = $request->getParsedBody();
     if(isset($data['content'])){
-
       $comment = new Comments($this->db);
       return $response->withJson($comment->addComment($data));
-
     }else{
         return $response->withStatus(400);
     }

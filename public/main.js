@@ -352,11 +352,15 @@
     const showEntryLikes = document.querySelector('#showEntryLikes');
     if (showEntryLike) showEntryLike.addEventListener('click', likeDislike)
 
+    // Entry new comment
+    const showEntryCommentForm = document.querySelector('#showEntryCommentForm');
+    if (showEntryCommentForm) showEntryCommentForm.addEventListener('submit', postNewComment);
+
     // Entry comments visning/redigering
     const showEntryComments = document.querySelector('#showEntryComments');
     if (showEntryComments)  showEntryComments.addEventListener('click', handleEntryCommentsEvents);
 
-    //New entry
+    // New entry
     const newEntryForm = document.querySelector('#newEntryForm');
     if (newEntryForm) newEntryForm.addEventListener('submit', postNewEntry);
   }
@@ -506,6 +510,7 @@
     })
     .catch(error => console.error(error));
   }
+
   function postNewEntry(e) {
     e.preventDefault();
     const formData = new FormData(newEntryForm);
@@ -518,7 +523,23 @@
       !data.success
         ? document.querySelector('#newEntryMessage').textContent = data.message
         : (new EntryView).showEntry(data.entryID);  
-    })
-    
+    });  
   }
+
+  function postNewComment(e) {
+    e.preventDefault();
+    const formData = new FormData(showEntryCommentForm);
+    formData.append('entryID', sessionStorage.getItem('entryID'));
+    fetch('/comment', {
+      method : 'POST',
+      body : formData
+    })
+    .then(response => response.ok ? response.json() : new Error(response.statustext))
+    .then(data => {
+      !data.success
+        ? document.querySelector('#showEntryCommentError').textContent = data.message
+        : (new EntryView).showEntry(sessionStorage.getItem('entryID'));  
+    });
+  }
+
 })(); // Namespace end

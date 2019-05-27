@@ -43,7 +43,6 @@ class Entry extends Mapper {
       return array(
         "success" => false,
         "message" => 'Titeln måste vara mellan 1-100 bokstäver och meddelandet mellan 1-1000!'
-
       );
     }
   }
