@@ -1,4 +1,9 @@
 (function(){
+   
+  // #########
+  // # VIEWS #
+  // #########
+
   // Knyt templates till views
   const views = {
     headerLoggedIn       : ['logoTemplate','memberLogoutTemplate','navTemplate','searchTemplate'],
@@ -14,27 +19,22 @@
     userRegistered       : ['loginFormTemplate','memberSuccessTemplate','entriesTemplate']
   }
 
-  // Basic View
+  // Base View (Läser in templates)
   class BaseView {
     renderView(view, targetName='main') {
-      // Definera target
       const target = document.querySelector(targetName);
       target.innerHTML = '';
-      // Loopa igenom vår view
       view.forEach(template => {
-        // Hämta template
         const templateMarkup = document.querySelector('#'+template).innerHTML;
-        // Läs in innehållet från template
         const content = document.createElement('template');
         content.innerHTML = templateMarkup;       
-        // Skriva ut innehållet i target
         target.append(content.content);
       });
       updateEventListeners();
     }
   }
 
-  // Views för inlägg
+  // Entry View (Hämtar och skriver ut data från databasen som rör inlägg)
   class EntryView extends BaseView {
     showEntries(entries='all',registered=false) {
       checkLogin().then(data => {
@@ -67,16 +67,16 @@
           .then(response => response.ok ? response.json() : new Error(response.statusText))
           .then(data => {
             if (data.length > 0) {
-              let count = 0; // Håller reda på när ny pagineringsvy ska skapas
-              let pageIndex = 1;  // Används för att numrera pagineringsvyer
+              let count = 0;
+              let pageIndex = 1;
               let page = document.createElement('div'); // Skapar första pagineringsvyn
               page.setAttribute('data-page', pageIndex);
               data.forEach(post => {
                 // Kontrollera om vi uppnåt 20 inlägg, appenda isf aktuell page
-                // fragment och skapa sedan en ny
+                // till fragment och skapa sedan en ny page
                 if (count === 20) {
-                  count = 0; // Nollställ count
-                  pageIndex++; // Öka på pageIndex
+                  count = 0;
+                  pageIndex++;
                   fragment.append(page);
                   page = document.createElement('div'); // Skapar nästa pagineringsvy
                   page.setAttribute('data-page', pageIndex);
@@ -92,16 +92,14 @@
                 heading.textContent = post.title;
                 posted.textContent = post.createdAt +' - '+ post.username;
                 content.textContent = post.content.length > 100 
-                ? post.content.substring(0,100)+' ...' 
-                : post.content;
+                  ? post.content.substring(0,100)+' ...' 
+                  : post.content;
                 entry.append(heading,posted,content);
-                // Appenda entry på aktuell page
                 page.append(entry);
-                // Räkna inlägget
                 count++;
               });
               // Skapa pagineringslänkar
-              const paging = document.createElement('ul'); // Lista för paginglänkar
+              const paging = document.createElement('ul');
               paging.classList.add('paging');
               for (let i = 1; i <= pageIndex; i++) {
                 const listItem = document.createElement('li');
@@ -151,13 +149,13 @@
             dateElement.textContent = data.createdAt;
             userElement.textContent = data.username;
             contentElement.textContent = data.content;
-            // Ta bort länkar för att gilla och/eller editera, ta bort om man inte är inloggad som rätt användare
+            // Ta bort länkar för att gilla och/eller editera om man inte är inloggad som rätt användare
             if (!loggedIn) 
               document.querySelectorAll('#showEntryLike, #showEntryLinks').forEach(link => link.remove());
             else if(sessionStorage.userID !== data.createdBy)
               document.querySelector('#showEntryLinks').remove();
-            this.getLikes(id);   // Hämta och skriv ut likes
-            this.getComments(id,loggedIn) // Hämta och skriv ut kommentarer
+            this.getLikes(id);
+            this.getComments(id,loggedIn)
           })
           .catch(error => console.error(error));
       });
@@ -165,21 +163,22 @@
     
     editEntry(entryId){
       checkLogin().then(data=> {
+        // Välj vy beroende på inloggningsstatus
         const loggedIn = data.loggedIn;
         loggedIn
-        ? this.renderView(views.editEntry)
-        : this.renderView(views.showEntry);
+          ? this.renderView(views.editEntry)
+          : this.renderView(views.showEntry);
         //Hämta aktuellt inlägg
         fetch('/entry/' + entryId)
-        .then(response => response.ok ? response.json() : new Error(response.statusText))
-        .then(data => {
-          //Skriv ut aktuella inlägget
-          const titleElement = document.querySelector('#editEntryTitle');
-          const contentElement = document.querySelector('#editEntryContent');
-          titleElement.value = data.title;
-          contentElement.value = data.content;
-        })
-      })
+          .then(response => response.ok ? response.json() : new Error(response.statusText))
+          .then(data => {
+            //Skriv ut aktuella inlägget
+            const titleElement = document.querySelector('#editEntryTitle');
+            const contentElement = document.querySelector('#editEntryContent');
+            titleElement.value = data.title;
+            contentElement.value = data.content;
+          });
+      });
     }
     
     editComment(id){
@@ -191,7 +190,6 @@
           fetch('/comment/'+id)
             .then(response => response.ok ? response.json() : new Error(response.statusText))
             .then(data => {
-              console.log(data)
               // Läs in aktuella kommentaren
               const contentElement = document.querySelector('#editCommentContent');
               contentElement.value = data.content;
@@ -215,16 +213,16 @@
         .then(response => response.ok ? response.json() : new Error(response.statusText))
         .then(data => {
           if (data.length > 0) {
-            let count = 0; // Håller reda på när ny pagineringsvy ska skapas
-            let pageIndex = 1;  // Används för att numrera pagineringsvyer
+            let count = 0;
+            let pageIndex = 1;
             let page = document.createElement('div'); // Skapar första pagineringsvyn
             page.setAttribute('data-page', pageIndex);
             data.forEach(post => {
               // Kontrollera om vi uppnåt 5 kommentarer, appenda isf aktuell page
-              // fragment och skapa sedan en ny
+              // till fragment och skapa sedan en ny page
               if (count === 5) {
-                count = 0; // Nollställ count
-                pageIndex++; // Öka på pageIndex
+                count = 0;
+                pageIndex++;
                 fragment.append(page);
                 page = document.createElement('div'); // Skapar nästa pagineringsvy
                 page.setAttribute('data-page', pageIndex);
@@ -255,9 +253,7 @@
                 bottom.append(commentLinks);
               }
               comment.append(content, bottom);
-              // Appenda comment på aktuell page
               page.append(comment);
-              // Räkna inlägget
               count++;
             });
             // Skapa pagineringslänkar
@@ -292,7 +288,7 @@
   }
     
 
-  // Views för users
+  // User View (Hämtar och skriver ut data från databasen som rör användare)
   class UserView extends BaseView {
     listAllUsers() {
       this.renderView(views.users);
@@ -337,12 +333,16 @@
     }
   }
 
+  // ################################################################
+  // # BESTÄM VAD SOM SKA LADDAS VID INLÄSNING/ UPPDATERING AV SIDA #
+  // ################################################################
+
   // Skriv ut meny och utloggningsknapp om vi är inloggad
   checkLogin().then(data => {
     (new BaseView).renderView(data.loggedIn ? views.headerLoggedIn : views.headerNotLoggedIn, 'header');
   });
 
-  // Skriv ut main views
+  // Skriv ut views vid första besök till sida eller vid uppdatering av sida
   if (sessionStorage.getItem('activeView') === 'privateEntries') (new EntryView).showEntries('private');
   else if (sessionStorage.getItem('activeView') === 'showEntry') (new EntryView).showEntry(sessionStorage.getItem('entryID'));
   else if (sessionStorage.getItem('activeView') === 'newEntry') (new EntryView).renderView(views.newEntry);
@@ -351,7 +351,10 @@
   else if (sessionStorage.getItem('activeView') === 'allUsers') (new UserView).listAllUsers(views.listAllUsers);
   else (new EntryView).showEntries();
  
-  // Funktion för att uppdatera selectorer och eventlisteners
+  // ######################
+  // # EVENTLISTENERS ETC #
+  // ######################
+
   function updateEventListeners() {
     // Login + Logoff + Register
     const loginForm = document.querySelector('#loginForm');
@@ -388,10 +391,18 @@
     const entriesListing = document.querySelector('#entriesListing');
     if (entriesListing) entriesListing.addEventListener('click', handleEntriesEvents);
 
-    // Entry gilla/redigera/ta bort
+    // Inlägg - Skapa - Radera - Redigera - Gilla
     const showEntryLike = document.querySelector('#showEntryLike');
     const showEntryLikes = document.querySelector('#showEntryLikes');
     if (showEntryLike) showEntryLike.addEventListener('click', likeDislike)
+    const newEntryForm = document.querySelector('#newEntryForm');
+    if (newEntryForm) newEntryForm.addEventListener('submit', postNewEntry);
+    const showEntryEdit = document.querySelector('#showEntryEdit');
+    if (showEntryEdit) showEntryEdit.addEventListener('click' , showEditEntry);
+    const editEntryForm = document.querySelector('#editEntryForm');
+    if (editEntryForm) editEntryForm.addEventListener('submit', postEditEntry);
+    const deleteEntryBtn = document.querySelector('#showEntryDelete');
+    if (deleteEntryBtn) deleteEntryBtn.addEventListener('click', deleteEntry);
 
     // Kommentarer - Skapa - Radera - Redigera
     const showEntryCommentForm = document.querySelector('#showEntryCommentForm');
@@ -400,32 +411,78 @@
     if (showEntryComments)  showEntryComments.addEventListener('click', handleEntryCommentsEvents);
     const editCommentForm = document.querySelector('#editCommentForm');
     if (editCommentForm) editCommentForm.addEventListener('submit', postEditComment);
-    
-    // New entry
-    const newEntryForm = document.querySelector('#newEntryForm');
-    if (newEntryForm) newEntryForm.addEventListener('submit', postNewEntry);
-
-    //Edit entry
-    const showEntryEdit = document.querySelector('#showEntryEdit');
-    if (showEntryEdit) showEntryEdit.addEventListener('click' , showEditEntry);
-
-    //Edit entry Submit
-    const editEntryForm = document.querySelector('#editEntryForm');
-    if (editEntryForm) editEntryForm.addEventListener('submit', postEditEntry);
-
-    //Delete entry
-    const deleteEntryBtn = document.querySelector('#showEntryDelete');
-    if (deleteEntryBtn) deleteEntryBtn.addEventListener('click', deleteEntry);
   }
   
-  // Disable searchbutton if searchfield is empty
+  // #############################
+  // # EVENTLISTENERS-FUNKTIONER #
+  // #############################
+
+  // Logga in + Logga ut + Registrera
+  function login(e) {
+    e.preventDefault();
+    const formData = new FormData(loginForm);
+    fetch('/api/login',{
+      method : 'POST',
+      body   : formData
+    })
+    .then(response => {
+      if (!response.ok) {
+        document.querySelector('#loginFormError').innerText = 'Fel användarnamn eller lösenord.'
+      }
+      else {
+        (new BaseView).renderView(views.headerLoggedIn, 'header');
+        (new EntryView).showEntries();
+        return response.json();
+      } 
+    })
+    .then(data => {
+      sessionStorage.setItem('userID',data.userID);
+      sessionStorage.setItem('username',data.username);
+    });
+  }
+
+  function logoff(e) {
+    e.preventDefault();
+    fetch('/api/logoff')
+    .then(response => {
+        (new BaseView).renderView(views.headerNotLoggedIn, 'header');
+        (new EntryView).showEntries();
+        sessionStorage.clear();
+    });
+  }
+
+  function registerUser(e) {
+    e.preventDefault();
+    const formData = new FormData(registerForm);
+    fetch('/user',{
+      method : 'POST',
+      body   : formData
+    })
+    .then(response => response.ok ? response.json() : new Error(response.statusText))
+    .then(data => {
+      !data.success
+        ? document.querySelector('#registerFormError').textContent = data.message
+        : (new EntryView).showEntries('all',true);
+    })
+    .catch(error => console.error(error));
+  }
+
+  // Sök
+  function searchAllEntries(e) {
+    e.preventDefault();
+    (new EntryView).showEntries('search', false);
+    sessionStorage.setItem('activeView', 'searchEntries');
+    sessionStorage.setItem('searchString', searchString.value);
+    e.target.reset();
+  }
+
   function searchFormControl() {
     (searchString.value.length > 0)
       ? searchBtn.disabled = false
       : searchBtn.disabled = true;
   }
 
-  // Funktioner för att ladda vyer
+  // Menyval
   function loadAllEntries(e) {
     e.preventDefault();
     (new EntryView).showEntries();
@@ -438,20 +495,19 @@
     sessionStorage.setItem('activeView', 'privateEntries');
   }
 
-  function searchAllEntries(e) {
-    e.preventDefault();
-    (new EntryView).showEntries('search', false);
-    sessionStorage.setItem('activeView', 'searchEntries');
-    sessionStorage.setItem('searchString', searchString.value);
-    e.target.reset();
-  }
-
   function writeNewEntry(e) {
     e.preventDefault();
     (new EntryView).renderView(views.newEntry);
     sessionStorage.setItem('activeView', 'newEntry');
   }
 
+  function listAllUsers(e) {
+    e.preventDefault();
+    (new UserView).listAllUsers();
+    sessionStorage.setItem('activeView', 'allUsers');
+  }
+
+  // Inlägg
   function handleEntriesEvents(e) {
     e.preventDefault();
     // Klick på poster laddar ett inlägg
@@ -476,115 +532,6 @@
       .catch(error => console.error(error));
   }
 
-  function handleEntryCommentsEvents(e) {
-    e.preventDefault();
-    // Klick på ta bort, tar bort ett inlägg
-    if (e.target.matches('[data-delid]')) {
-      if (confirm('Är du säker på att du vill ta bort inlägget?')) {
-        const id = e.target.getAttribute('data-delid');
-        fetch('/comment/'+id, { method : 'DELETE' })
-          .then(response => {
-            !response.ok
-              ? alert('Inlägget kunde inte tas bort!')
-              : (new EntryView).showEntry(sessionStorage.getItem('entryID'));
-          });
-      }
-    }
-    // Klick på redigera, redigerar ett inlägg
-    else if (e.target.matches('[data-editid]')) {
-      const id = e.target.getAttribute('data-editid');
-      sessionStorage.setItem('activeView', 'editComment');
-      sessionStorage.setItem('commentID', id);
-      (new EntryView).editComment(id);
-    }
-    // Klick på paging byter sida i pagingvyn
-    else if (e.target.matches('.paging a')) {
-      const pages = document.querySelectorAll('#showEntryComments > div');
-      pagingViewer(pages,e);
-    }
-  }
-
-  function pagingViewer(pages,e) {
-    // Visar vald vy, gömmer resten
-    pages.forEach(el => {
-      (el.dataset.page === e.target.dataset.page)
-        ? el.classList.remove('paging-hidden')
-        : el.classList.add('paging-hidden');
-    });
-    // Markerar vald vy i pagingnavigationen
-    const paging = document.querySelectorAll('.paging a');
-    paging.forEach(el => {
-      (el.dataset.page === e.target.dataset.page)
-        ? el.classList.add('paging-active')
-        : el.classList.remove('paging-active');
-    });
-  }
-
-  function listAllUsers(e) {
-    e.preventDefault();
-    (new UserView).listAllUsers();
-    sessionStorage.setItem('activeView', 'allUsers');
-  }
-
-  // Login
-  function login(e) {
-    e.preventDefault();
-    const formData = new FormData(loginForm);
-    fetch('/api/login',{
-      method : 'POST',
-      body   : formData
-    })
-    .then(response => {
-      if (!response.ok) {
-        document.querySelector('#loginFormError').innerText = 'Fel användarnamn eller lösenord.'
-      }
-      else {
-        (new BaseView).renderView(views.headerLoggedIn, 'header');
-        (new EntryView).showEntries();
-        return response.json();
-      } 
-    })
-    .then(data => {
-      sessionStorage.setItem('userID',data.userID);
-      sessionStorage.setItem('username',data.username);
-    });
-  }
-
-  // Logoff
-  function logoff(e) {
-    e.preventDefault();
-    fetch('/api/logoff')
-    .then(response => {
-        (new BaseView).renderView(views.headerNotLoggedIn, 'header');
-        (new EntryView).showEntries();
-        sessionStorage.clear();
-    });
-  }
-
-  // Funktion för att kolla inloggningsstatus
-  function checkLogin() {
-    return fetch('/api/ping')
-      .then(response => response.ok ? response.json() : new Error(response.statusText))
-      .catch(error => console.error(error));
-  }
-
-  // Registrera användare
-  function registerUser(e) {
-    e.preventDefault();
-    const formData = new FormData(registerForm);
-    fetch('/user',{
-      method : 'POST',
-      body   : formData
-    })
-    .then(response => response.ok ? response.json() : new Error(response.statusText))
-    .then(data => {
-      !data.success
-        ? document.querySelector('#registerFormError').textContent = data.message
-        : (new EntryView).showEntries('all',true);
-    })
-    .catch(error => console.error(error));
-  }
-
   function postNewEntry(e) {
     e.preventDefault();
     const formData = new FormData(newEntryForm);
@@ -602,6 +549,82 @@
         (new EntryView).showEntry(data.entryID);
       }
     });  
+  }
+
+  function showEditEntry(e){
+    e.preventDefault();
+    sessionStorage.setItem('activeView', 'editEntry');
+    (new EntryView).editEntry(sessionStorage.getItem('entryID'));
+  }
+  
+  function postEditEntry(e){
+    e.preventDefault();
+    const formData = new FormData(editEntryForm);
+    const object = {};
+    formData.forEach((value, key) => {object[key] = value});
+    const json = JSON.stringify(object);
+    fetch('/entry/'+sessionStorage.getItem('entryID'), {
+      method : 'PUT',
+      headers: {"Content-type": "application/json"},
+      body: json
+    })
+    .then(response => response.ok ? response.json() : new Error(response.statustext))
+    .then(data => {
+      if (!data.success) {
+        document.querySelector('#editEntryMessage').textContent = data.message;
+      }
+      else {
+        sessionStorage.setItem('activeView', 'showEntry');
+        (new EntryView).showEntry(data.entryID);
+      }
+    })
+  }
+
+  function deleteEntry(e){
+    e.preventDefault();
+    if(confirm('Vill du ta bort inlägget?')){
+      fetch('/entry/'+sessionStorage.getItem('entryID'), {
+        method : 'DELETE'
+      })
+      .then(response => response.ok ? response.json() : new Error(response.statustext))
+      .then(data => {
+        if (!data.success) {
+          alert('Inlägget kunde inte tas bort')
+        } else {
+          (new EntryView).showEntries('private')
+          sessionStorage.setItem('activeView','privateEntries')
+        }
+      })
+    }
+  }
+
+  // Kommentarer
+  function handleEntryCommentsEvents(e) {
+    e.preventDefault();
+    // Klick på ta bort, tar bort en kommentar
+    if (e.target.matches('[data-delid]')) {
+      if (confirm('Är du säker på att du vill ta bort kommentaren?')) {
+        const id = e.target.getAttribute('data-delid');
+        fetch('/comment/'+id, { method : 'DELETE' })
+          .then(response => {
+            !response.ok
+              ? alert('Kommentaren kunde inte tas bort!')
+              : (new EntryView).showEntry(sessionStorage.getItem('entryID'));
+          });
+      }
+    }
+    // Klick på redigera, redigerar en kommentar
+    else if (e.target.matches('[data-editid]')) {
+      const id = e.target.getAttribute('data-editid');
+      sessionStorage.setItem('activeView', 'editComment');
+      sessionStorage.setItem('commentID', id);
+      (new EntryView).editComment(id);
+    }
+    // Klick på paging byter sida i pagingvyn
+    else if (e.target.matches('.paging a')) {
+      const pages = document.querySelectorAll('#showEntryComments > div');
+      pagingViewer(pages,e);
+    }
   }
 
   function postNewComment(e) {
@@ -643,52 +666,32 @@
     });
   }
 
-  function showEditEntry(e){
-    e.preventDefault();
-    sessionStorage.setItem('activeView', 'editEntry');
-    (new EntryView).editEntry(sessionStorage.getItem('entryID'));
-  }
-  
-  function postEditEntry(e){
-    e.preventDefault();
-    const formData = new FormData(editEntryForm);
-    const object = {};
-    formData.forEach((value, key) => {object[key] = value});
-    const json = JSON.stringify(object);
-    console.log(json);
-    fetch('/entry/'+sessionStorage.getItem('entryID'), {
-      method : 'PUT',
-      headers: {"Content-type": "application/json"},
-      body: json
-    })
-    .then(response => response.ok ? response.json() : new Error(response.statustext))
-    .then(data => {
-      if (!data.success) {
-        document.querySelector('#editEntryMessage').textContent = data.message;
-      }
-      else {
-        sessionStorage.setItem('activeView', 'showEntry');
-        (new EntryView).showEntry(data.entryID);
-      }
-    })
+  // #####################
+  // # ÖVRIGA FUNKTIONER #
+  // #####################
+
+  // Funktion för att kolla inloggningsstatus
+  function checkLogin() {
+    return fetch('/api/ping')
+      .then(response => response.ok ? response.json() : new Error(response.statusText))
+      .catch(error => console.error(error));
   }
 
-  function deleteEntry(e){
-    e.preventDefault();
-    if(confirm('Vill du ta bort inlägget?')){
-      fetch('/entry/'+sessionStorage.getItem('entryID'), {
-        method : 'DELETE'
-      })
-      .then(response => response.ok ? response.json() : new Error(response.statustext))
-      .then(data => {
-        console.log(data);
-        if(!data.success){
-          alert('Inlägget kunde inte tas bort')
-        }else{
-          (new EntryView).showEntries('private')
-          sessionStorage.setItem('activeView','privateEntries')
-        }
-      })
-    }
+  // Funktion för att byta sida i paginering
+  function pagingViewer(pages,e) {
+    // Visar vald vy, gömmer resten
+    pages.forEach(el => {
+      (el.dataset.page === e.target.dataset.page)
+        ? el.classList.remove('paging-hidden')
+        : el.classList.add('paging-hidden');
+    });
+    // Markerar vald vy i pagingnavigationen
+    const paging = document.querySelectorAll('.paging a');
+    paging.forEach(el => {
+      (el.dataset.page === e.target.dataset.page)
+        ? el.classList.add('paging-active')
+        : el.classList.remove('paging-active');
+    });
   }
-})(); // Namespace end
+
+})();

@@ -1,7 +1,8 @@
 <?php
 
-class Comments extends Mapper{
-  public function getComments($entryID, $order, $limit){
+class Comments extends Mapper {
+  // Hämta alla kommentarer för ett inlägg
+  public function getComments($entryID, $order, $limit) {
     $s = $this->db->prepare("
         SELECT comments.*, users.username FROM comments
         JOIN users ON users.userID = comments.createdBy
@@ -13,14 +14,17 @@ class Comments extends Mapper{
     return $s->fetchAll(PDO::FETCH_ASSOC);
   }
   
+  // Hämta en specifik kommentar
   public function getComment($id){
     $s = $this->db->prepare("SELECT * FROM comments WHERE commentID=:id");
     $s->execute([':id' => $id]); 
     return $s->fetch(PDO::FETCH_ASSOC);
   }
 
+  // Lägg till en ny kommentar
   public function addComment($comment){
     $s = $this->db->prepare('INSERT INTO comments (entryID, content, createdBy, createdAt) VALUES (:entryID, :content, :createdBy, NOW())');
+    // Kontrollera min/max-längd
     if(strlen($comment['content']) > 0 && strlen($comment['content']) <= 250){
       $success = $s->execute([
         ':entryID' => $comment['entryID'],    
@@ -42,8 +46,10 @@ class Comments extends Mapper{
     }
   }
 
+  // Ändra en kommentar
   public function editComment($data, $commentID){
     $s = $this->db->prepare('UPDATE comments SET content = :content WHERE commentID = :commentID AND createdBy = :createdBy');
+    // Kontrollera min/max-längd
     if(strlen($data['content']) > 0 && strlen($data['content']) <= 250){
       $s->bindParam(':content', $data['content'], PDO::PARAM_STR);
       $s->bindParam(':commentID', $commentID, PDO::PARAM_INT);
@@ -64,6 +70,7 @@ class Comments extends Mapper{
     }
   }
   
+  // Ta bort en kommentar
   public function deleteComment($commentID){
     $s = $this->db->prepare('DELETE FROM comments WHERE commentID = :commentID AND createdBy = :createdBy');
     $s->execute([
