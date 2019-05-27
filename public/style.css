@@ -97,7 +97,7 @@ table{
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     background-color: rgb(216, 216, 216);
-    padding: 10px;
+    padding: 10px 5px 10px 10px;
     margin-bottom: 20px;
 }
 
@@ -121,6 +121,11 @@ table{
 #newEntryTable td, #editEntryTable td, #allUsers td{
     width: auto;
     text-align: left;
+}
+
+#newEntryTable form{
+    margin: 0;
+    padding: 0;
 }
 
 #newEntryTable h1, #editEntryTable h1{
@@ -154,7 +159,7 @@ input[type=text], input[type=password], button, textarea{
     font-family: 'Montserrat', sans-serif;
     margin: 10px 0 10px 0;
     border: 1px solid black;
-    padding: 10px 14px;
+    padding: 10px;
     width: 100%;
 }
 
@@ -170,8 +175,8 @@ textarea{
 .btn{
     align-self: right;
     float: right;
-    width: 50%;
     margin-right: 3px;
+    width: 50%;
 }
 
 label{
