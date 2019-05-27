@@ -12,6 +12,12 @@ class Comments extends Mapper{
     ]); 
     return $s->fetchAll(PDO::FETCH_ASSOC);
   }
+  
+  public function getComment($id){
+    $s = $this->db->prepare("SELECT * FROM comments WHERE commentID=:id");
+    $s->execute([':id' => $id]); 
+    return $s->fetch(PDO::FETCH_ASSOC);
+  }
 
   public function addComment($comment){
     $s = $this->db->prepare('INSERT INTO comments (entryID, content, createdBy, createdAt) VALUES (:entryID, :content, :createdBy, NOW())');
@@ -23,7 +29,6 @@ class Comments extends Mapper{
       ]);
       return array(
         "userID"=>$_SESSION['userID'],
-        "title"=>$title,
         "content"=>$content,
         "action"=>'new comment',
         "success"=>$success
@@ -38,18 +43,32 @@ class Comments extends Mapper{
   }
 
   public function editComment($data, $commentID){
-    $s = $this->db->prepare('UPDATE comments SET content = :content , createdAt = NOW() WHERE commentID = :commentID AND createdBy = :createdBy');
-    $s->bindParam(':content', $data['content'], PDO::PARAM_STR);
-    $s->bindParam(':commentID', $commentID, PDO::PARAM_INT);
-    $s->bindParam(':createdBy', $_SESSION['userID'], PDO::PARAM_INT);
-    $s->execute();
+    $s = $this->db->prepare('UPDATE comments SET content = :content WHERE commentID = :commentID AND createdBy = :createdBy');
+    if(strlen($data['content']) > 0 && strlen($data['content']) <= 250){
+      $s->bindParam(':content', $data['content'], PDO::PARAM_STR);
+      $s->bindParam(':commentID', $commentID, PDO::PARAM_INT);
+      $s->bindParam(':createdBy', $_SESSION['userID'], PDO::PARAM_INT);
+      $success = $s->execute();
+      return array(
+        "userID"=>$_SESSION['userID'],
+        "content"=>$data,
+        "action"=>'update comment',
+        "success"=>$success
+      );
+    }
+    else {
+      return array(
+        "success" => false,
+        "message" => 'Kommentaren måste vara mellan 1-250 tecken!'
+      );
+    }
   }
   
   public function deleteComment($commentID){
     $s = $this->db->prepare('DELETE FROM comments WHERE commentID = :commentID AND createdBy = :createdBy');
     $s->execute([
-        ':commentID' => $commentID,
-        ':createdBy' => $_SESSION['userID']
+      ':commentID' => $commentID,
+      ':createdBy' => $_SESSION['userID']
     ]);
   }
 }

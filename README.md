@@ -59,11 +59,12 @@ Repo: https://github.com/Awkes/journal.git
   
 ## COMMENTS
 
-| GET                    | Beskrivning |
-| ---                    | --- |
-| /comment/{entryID}          | Hämta alla kommentarer till {entryID} |
-| /comment/{entryID}?limit=X  | Hämta X antal kommentarer från {entryID} |
-| /comment/{entryID}?order=X  | Hämta kommentarer från {entryID} sorterat i ordning X [ASC eller DESC (ASC är standard)] |
+| GET                          | Beskrivning |
+| ---                          | --- |
+| /comments/{entryID}          | Hämta alla kommentarer till {entryID} |
+| /comments/{entryID}?limit=X  | Hämta X antal kommentarer från {entryID} |
+| /comments/{entryID}?order=X  | Hämta kommentarer från {entryID} sorterat i ordning X [ASC eller DES (ASC är standard)] |
+| /comment/{id}                 | Hämta en kommentar med id {id} |
 
 | POST              | Beskrivning |
 | ---               | --- |  

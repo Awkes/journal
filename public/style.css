@@ -83,7 +83,7 @@ table{
     margin: 0;
 }
 
-#loginFormError, #registerFormError, #newEntryMessage, #showEntryCommentError { color: #F00; }
+#loginFormError, #registerFormError, #newEntryMessage, #showEntryCommentError, #editCommentError { color: #F00; }
 
 #loginTable, #registerTable, #memberSuccess, #newEntry, #editEntry{
     border-top: 1px solid black;

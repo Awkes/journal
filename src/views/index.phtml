@@ -167,6 +167,17 @@
       <div id="showEntryComments">       
       </div>
     </template>
+
+    <template id="editCommentTemplate">
+      <h2><label for="editComment">Redigera Kommentar</label></h2>
+      <div>
+        <form id="editCommentForm">
+          <textarea id="editCommentContent" name="content"></textarea>
+          <button type="submit">Uppdatera kommentar</button>
+          <div id="editCommentError"></div>
+        </form>
+      </div>
+    </template>
   
     <template id="newEntryTemplate">
       <div id="newEntry">
