@@ -43,6 +43,14 @@ header{
     grid-column: 2/4;
 }
 
+a{
+    color: black;
+}
+
+a:hover{
+    text-decoration: none;
+}
+
 nav{
     text-align: center; 
 }
