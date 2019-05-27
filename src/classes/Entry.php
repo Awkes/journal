@@ -56,21 +56,40 @@ class Entry extends Mapper {
   
   // Uppdatera inlägg
   public function updEntry($id,$title,$content) {
-    $s = $this->db->prepare('UPDATE entries SET title=?, content=? WHERE entryID=? AND createdBy=?');
-    $success = $s->execute([$title,$content,$id,$_SESSION['userID']]);
-    return array(
-      "userID"=>$_SESSION['userID'],
-      "title"=>$title,
-      "content"=>$content,
-      "action"=>'update entry',
-      "success"=>$success
-    );
+    if(strlen($title) > 0 && strlen($content) > 0 && strlen($title) < 100 && strlen($content) < 1000){
+      $s = $this->db->prepare('UPDATE entries SET title=?, content=? WHERE entryID=? AND createdBy=?');
+      $success = $s->execute([$title,$content,$id,$_SESSION['userID']]);
+      return array(
+        "userID"=>$_SESSION['userID'],
+        "title"=>$title,
+        "content"=>$content,
+        "action"=>'update entry',
+        "success"=>$success,
+        "entryID"=>$id
+      );
+    }else{
+      return array(
+        "success"=> false,
+        "message" => 'Titeln måste vara mellan 1-100 bokstäver och meddelandet mellan 1-1000!'
+      );
+    }
   }
   
   // Ta bort inlägg
   public function delEntry($id) {
+
     $s = $this->db->prepare('DELETE FROM entries WHERE entryID=? AND createdBy=?');
     $success = $s->execute([$id,$_SESSION['userID']]);
+
+    if($success){
+      $s = $this->db->prepare('DELETE FROM comments WHERE entryID=? AND createdBy=?');
+      $success = $s->execute([$id,$_SESSION['userID']]);
+
+      if($success){
+        $s = $this->db->prepare('DELETE FROM likes WHERE entryID=? AND userID =?');
+        $success = $s->execute([$id,$_SESSION['userID']]);
+      }
+    }
     return array(
       "id"=>$id,
       "action"=>'delete entry',

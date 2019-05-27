@@ -50,7 +50,7 @@ return function ($app) {
       return $response->withJson($entry->updEntry($args['id'],$data['title'],$data['content']));
     } 
     else {
-      return $response->withStatus(400);
+      return $response->withStatus();
     }
   })->add($auth);
 
