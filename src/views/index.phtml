@@ -154,8 +154,9 @@
       <h2><label for="showEntryComment">Kommentera</label></h2>
       <div>
         <form id="showEntryCommentForm">
-          <textarea id="showEntryComment" name="comment"></textarea>
+          <textarea id="showEntryComment" name="content"></textarea>
           <button type="submit">Kommentera</button>
+          <div id="showEntryCommentError"></div>
         </form>
       </div>
       <hr>
@@ -164,6 +165,17 @@
     <template id="showEntryCommentsTemplate">
       <h2>Kommentarer</h2>
       <div id="showEntryComments">       
+      </div>
+    </template>
+
+    <template id="editCommentTemplate">
+      <h2><label for="editComment">Redigera Kommentar</label></h2>
+      <div>
+        <form id="editCommentForm">
+          <textarea id="editCommentContent" name="content"></textarea>
+          <button type="submit">Uppdatera kommentar</button>
+          <div id="editCommentError"></div>
+        </form>
       </div>
     </template>
   

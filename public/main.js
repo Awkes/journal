@@ -9,6 +9,7 @@
     showEntryNotLoggedIn : ['showEntryTemplate','showEntryCommentsTemplate'],
     newEntry             : ['newEntryTemplate'],
     editEntry            : ['editEntryTemplate'],
+    editComment          : ['editCommentTemplate'],
     users                : ['membersTemplate'],
     userRegistered       : ['loginFormTemplate','memberSuccessTemplate','entriesTemplate']
   }
@@ -163,12 +164,11 @@
     }
     
     editEntry(entryId){
-      /* console.log(id); */
       checkLogin().then(data=> {
         const loggedIn = data.loggedIn;
         loggedIn
         ? this.renderView(views.editEntry)
-        : this.renderView(views.showEntryTemplate);
+        : this.renderView(views.showEntry);
         //Hämta aktuellt inlägg
         fetch('/entry/' + entryId)
         .then(response => response.ok ? response.json() : new Error(response.statusText))
@@ -180,6 +180,24 @@
           contentElement.value = data.content;
         })
       })
+    }
+    
+    editComment(id){
+      checkLogin().then(data=> {
+        const loggedIn = data.loggedIn;
+        if (loggedIn) {
+          this.renderView(views.editComment);
+          // Hämta aktuell kommentar
+          fetch('/comment/'+id)
+            .then(response => response.ok ? response.json() : new Error(response.statusText))
+            .then(data => {
+              console.log(data)
+              // Läs in aktuella kommentaren
+              const contentElement = document.querySelector('#editCommentContent');
+              contentElement.value = data.content;
+            });
+        }
+      });
     }
 
     getLikes(id) {
@@ -193,7 +211,7 @@
       const target = document.querySelector('#showEntryComments');
       let fragment = document.createDocumentFragment();
       // Hämta och läs in kommentarer
-      fetch('/comment/'+id+'?order=desc')
+      fetch('/comments/'+id+'?order=desc')
         .then(response => response.ok ? response.json() : new Error(response.statusText))
         .then(data => {
           if (data.length > 0) {
@@ -269,8 +287,7 @@
           target.innerHTML = '';
           target.append(fragment);
         })
-        .catch(error => console.error(error));
-    
+        .catch(error => console.error(error));   
     }  
   }
     
@@ -330,6 +347,7 @@
   else if (sessionStorage.getItem('activeView') === 'showEntry') (new EntryView).showEntry(sessionStorage.getItem('entryID'));
   else if (sessionStorage.getItem('activeView') === 'newEntry') (new EntryView).renderView(views.newEntry);
   else if (sessionStorage.getItem('activeView') === 'editEntry') (new EntryView).editEntry(sessionStorage.getItem('entryID'));
+  else if (sessionStorage.getItem('activeView') === 'editComment') (new EntryView).editComment(sessionStorage.getItem('commentID'));
   else if (sessionStorage.getItem('activeView') === 'allUsers') (new UserView).listAllUsers(views.listAllUsers);
   else (new EntryView).showEntries();
  
@@ -375,11 +393,15 @@
     const showEntryLikes = document.querySelector('#showEntryLikes');
     if (showEntryLike) showEntryLike.addEventListener('click', likeDislike)
 
-    // Entry comments visning/redigering
+    // Kommentarer - Skapa - Radera - Redigera
+    const showEntryCommentForm = document.querySelector('#showEntryCommentForm');
+    if (showEntryCommentForm) showEntryCommentForm.addEventListener('submit', postNewComment);
     const showEntryComments = document.querySelector('#showEntryComments');
     if (showEntryComments)  showEntryComments.addEventListener('click', handleEntryCommentsEvents);
-
-    //New entry
+    const editCommentForm = document.querySelector('#editCommentForm');
+    if (editCommentForm) editCommentForm.addEventListener('submit', postEditComment);
+    
+    // New entry
     const newEntryForm = document.querySelector('#newEntryForm');
     if (newEntryForm) newEntryForm.addEventListener('submit', postNewEntry);
 
@@ -456,12 +478,27 @@
 
   function handleEntryCommentsEvents(e) {
     e.preventDefault();
-    // Lägg till eventlisteners för
-    // tabort
-    // redigera
-
+    // Klick på ta bort, tar bort ett inlägg
+    if (e.target.matches('[data-delid]')) {
+      if (confirm('Är du säker på att du vill ta bort inlägget?')) {
+        const id = e.target.getAttribute('data-delid');
+        fetch('/comment/'+id, { method : 'DELETE' })
+          .then(response => {
+            !response.ok
+              ? alert('Inlägget kunde inte tas bort!')
+              : (new EntryView).showEntry(sessionStorage.getItem('entryID'));
+          });
+      }
+    }
+    // Klick på redigera, redigerar ett inlägg
+    else if (e.target.matches('[data-editid]')) {
+      const id = e.target.getAttribute('data-editid');
+      sessionStorage.setItem('activeView', 'editComment');
+      sessionStorage.setItem('commentID', id);
+      (new EntryView).editComment(id);
+    }
     // Klick på paging byter sida i pagingvyn
-    if (e.target.matches('.paging a')); {
+    else if (e.target.matches('.paging a')) {
       const pages = document.querySelectorAll('#showEntryComments > div');
       pagingViewer(pages,e);
     }
@@ -518,7 +555,6 @@
     e.preventDefault();
     fetch('/api/logoff')
     .then(response => {
-        console.log(response);
         (new BaseView).renderView(views.headerNotLoggedIn, 'header');
         (new EntryView).showEntries();
         sessionStorage.clear();
@@ -548,6 +584,7 @@
     })
     .catch(error => console.error(error));
   }
+
   function postNewEntry(e) {
     e.preventDefault();
     const formData = new FormData(newEntryForm);
@@ -561,11 +598,50 @@
         document.querySelector('#newEntryMessage').textContent = data.message
       }else{
         sessionStorage.setItem('entryID', data.entryID);
-         (new EntryView).showEntry(data.entryID);  
+        (new EntryView).showEntry(data.entryID);
       }
-    })
-    
+    });  
   }
+
+  function postNewComment(e) {
+    e.preventDefault();
+    const formData = new FormData(showEntryCommentForm);
+    formData.append('entryID', sessionStorage.getItem('entryID'));
+    fetch('/comment', {
+      method : 'POST',
+      body : formData
+    })
+    .then(response => response.ok ? response.json() : new Error(response.statustext))
+    .then(data => {
+      !data.success
+        ? document.querySelector('#showEntryCommentError').textContent = data.message
+        : (new EntryView).showEntry(sessionStorage.getItem('entryID'));  
+    });
+  }
+
+  function postEditComment(e){
+    e.preventDefault();
+    const formData = new FormData(editCommentForm);
+    const object = {};
+    formData.forEach((value, key) => {object[key] = value});
+    const json = JSON.stringify(object);
+    fetch('/comment/'+sessionStorage.getItem('commentID'), {
+      method : 'PUT',
+      headers: {"Content-type": "application/json"},
+      body: json
+    })
+    .then(response => response.ok ? response.json() : new Error(response.statustext))
+    .then(data => {
+      if (!data.success) {
+        document.querySelector('#editCommentError').textContent = data.message;
+      }
+      else {
+        sessionStorage.setItem('activeView', 'showEntry');
+        (new EntryView).showEntry(sessionStorage.getItem('entryID'));
+      }
+    });
+  }
+
   function showEditEntry(e){
     e.preventDefault();
     sessionStorage.setItem('activeView', 'editEntry');

@@ -91,7 +91,7 @@ table{
     margin: 0;
 }
 
-#loginFormError, #registerFormError{ color: #F00; }
+#loginFormError, #registerFormError, #newEntryMessage, #showEntryCommentError, #editCommentError { color: #F00; }
 
 #loginTable, #registerTable, #memberSuccess, #newEntry, #editEntry{
     border-top: 1px solid black;
@@ -222,10 +222,8 @@ hr{
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
-#showEntryComment { 
-  height: 6em; 
-  grid-column: 1/3;
-}
+#showEntryComment { height: 6em; }
+#showEntryComment, #showEntryCommentError { grid-column: 1/3; }
 #showEntryCommentForm button { grid-column: 2/3; }
 #showEntryLikes { 
   font-weight: bold;

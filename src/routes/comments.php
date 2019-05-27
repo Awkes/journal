@@ -4,8 +4,8 @@ return function ($app) {
   // Register auth middleware
   $auth = require __DIR__ . '/../middlewares/auth.php';
 
-  $app->get('/comment/{entryID}', function($request, $response, $args){
-
+  // Hämta alla kommentarer för ett inlägg
+  $app->get('/comments/{entryID}', function($request, $response, $args){
     $entryID = $args['entryID'];
     $qryString = $request->getQueryParams();
     // Begränsa antalet
@@ -14,26 +14,30 @@ return function ($app) {
     // Välj order
     $order = (isset($qryString['order']) && $qryString['order'] == 'desc') 
       ? 'DESC' : 'ASC';
-
-      $comment = new Comments($this->db);
-
+    $comment = new Comments($this->db);
     return $response->withJson($comment->getComments($entryID,$order,$limit));
   });
 
-  $app->post('/comment', function($request, $response){
+  // Hämta en kommentar
+  $app->get('/comment/{id}', function($request, $response, $args){
+    $id = $args['id'];
+    $comment = new Comments($this->db);
+    return $response->withJson($comment->getComment($id));
+  });
 
+  // Skapa kommentar
+  $app->post('/comment', function($request, $response){
     $data = $request->getParsedBody();
     if(isset($data['content'])){
-
       $comment = new Comments($this->db);
       return $response->withJson($comment->addComment($data));
-
     }else{
         return $response->withStatus(400);
     }
 
   })->add($auth);
 
+  // Redigera kommentar
   $app->put('/comment/{id}', function($request, $response, $args){
     $data = $request->getParsedBody();
     if(isset($data['content']) && isset($args['id'])) {
