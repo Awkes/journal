@@ -27,7 +27,7 @@ class Entry extends Mapper {
 
   // Skapa nytt inlägg
   public function newEntry($title,$content) {
-    if(strlen($title) > 1 && strlen($content) > 1){
+    if(strlen($title) > 0 && strlen($content) > 0 && strlen($title) < 100 && strlen($content) < 1000){
       $s = $this->db->prepare('INSERT INTO entries (createdBy, title, content, createdAt) VALUES (?, ?, ?, NOW())');
       $success = $s->execute([$_SESSION['userID'],$title,$content]);
       return array(
@@ -39,8 +39,8 @@ class Entry extends Mapper {
       );
     }else {
       return array(
-        "succes" => false,
-        "message" => 'Tomma input fält'
+        "success" => false,
+        "message" => 'Titeln måste vara mellan 1-100 bokstäver och meddelandet mellan 1-1000!'
       );
     }
   }
