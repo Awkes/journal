@@ -342,6 +342,10 @@
     const searchEntries = document.querySelector('#searchEntries');
     if (searchEntries) searchEntries.addEventListener('submit', searchAllEntries);
     const searchString = document.querySelector('#searchString');
+    if (searchString) {
+      searchString.addEventListener('keyup', searchFormControl);
+      searchString.addEventListener('blur', searchFormControl);
+    }
 
     // Entries visning/redigering
     const entriesListing = document.querySelector('#entriesListing');
@@ -359,6 +363,13 @@
     //New entry
     const newEntryForm = document.querySelector('#newEntryForm');
     if (newEntryForm) newEntryForm.addEventListener('submit', postNewEntry);
+  }
+  
+  // Disable searchbutton if searchfield is empty
+  function searchFormControl() {
+    (searchString.value.length > 0)
+      ? searchBtn.disabled = false
+      : searchBtn.disabled = true;
   }
 
   // Funktioner för att ladda vyer
