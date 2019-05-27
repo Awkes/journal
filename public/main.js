@@ -161,6 +161,26 @@
           .catch(error => console.error(error));
       });
     }
+    
+    editEntry(entryId){
+      /* console.log(id); */
+      checkLogin().then(data=> {
+        const loggedIn = data.loggedIn;
+        loggedIn
+        ? this.renderView(views.editEntry)
+        : this.renderView(views.showEntryTemplate);
+        //Hämta aktuellt inlägg
+        fetch('/entry/' + entryId)
+        .then(response => response.ok ? response.json() : new Error(response.statusText))
+        .then(data => {
+          //Skriv ut aktuella inlägget
+          const titleElement = document.querySelector('#editEntryTitle');
+          const contentElement = document.querySelector('#editEntryContent');
+          titleElement.value = data.title;
+          contentElement.value = data.content;
+        })
+      })
+    }
 
     getLikes(id) {
       fetch('/likes/'+id)
@@ -250,12 +270,10 @@
           target.append(fragment);
         })
         .catch(error => console.error(error));
-    }
     
-    editEntry() {
-
-    }
+    }  
   }
+    
 
   // Views för users
   class UserView extends BaseView {
@@ -311,6 +329,7 @@
   if (sessionStorage.getItem('activeView') === 'privateEntries') (new EntryView).showEntries('private');
   else if (sessionStorage.getItem('activeView') === 'showEntry') (new EntryView).showEntry(sessionStorage.getItem('entryID'));
   else if (sessionStorage.getItem('activeView') === 'newEntry') (new EntryView).renderView(views.newEntry);
+  else if (sessionStorage.getItem('activeView') === 'editEntry') (new EntryView).editEntry(sessionStorage.getItem('entryID'));
   else if (sessionStorage.getItem('activeView') === 'allUsers') (new UserView).listAllUsers(views.listAllUsers);
   else (new EntryView).showEntries();
  
@@ -363,6 +382,18 @@
     //New entry
     const newEntryForm = document.querySelector('#newEntryForm');
     if (newEntryForm) newEntryForm.addEventListener('submit', postNewEntry);
+
+    //Edit entry
+    const showEntryEdit = document.querySelector('#showEntryEdit');
+    if (showEntryEdit) showEntryEdit.addEventListener('click' , showEditEntry);
+
+    //Edit entry Submit
+    const editEntryForm = document.querySelector('#editEntryForm');
+    if (editEntryForm) editEntryForm.addEventListener('submit', postEditEntry);
+
+    //Delete entry
+    const deleteEntryBtn = document.querySelector('#showEntryDelete');
+    if (deleteEntryBtn) deleteEntryBtn.addEventListener('click', deleteEntry);
   }
   
   // Disable searchbutton if searchfield is empty
@@ -531,5 +562,50 @@
         : (new EntryView).showEntry(data.entryID);  
     })
     
+  }
+  function showEditEntry(e){
+    e.preventDefault();
+    sessionStorage.setItem('activeView', 'editEntry');
+    (new EntryView).editEntry(sessionStorage.getItem('entryID'));
+  }
+  
+  function postEditEntry(e){
+    e.preventDefault();
+    const formData = new FormData(editEntryForm);
+    const object = {};
+    formData.forEach((value, key) => {object[key] = value});
+    const json = JSON.stringify(object);
+    console.log(json);
+    fetch('/entry/'+sessionStorage.getItem('entryID'), {
+      method : 'PUT',
+      headers: {"Content-type": "application/json"},
+      body: json
+    })
+    .then(response => response.ok ? response.json() : new Error(response.statustext))
+    .then(data => {
+      console.log(data);
+      !data.success
+      ? document.querySelector('#editEntryMessage').textContent = data.message
+        : (new EntryView).showEntry(data.entryID);  
+    })
+  }
+
+  function deleteEntry(e){
+    e.preventDefault();
+    if(confirm('Vill du ta bort inlägget?')){
+      fetch('/entry/'+sessionStorage.getItem('entryID'), {
+        method : 'DELETE'
+      })
+      .then(response => response.ok ? response.json() : new Error(response.statustext))
+      .then(data => {
+        console.log(data);
+        if(!data.success){
+          alert('Inlägget kunde inte tas bort')
+        }else{
+          (new EntryView).showEntries('private')
+          sessionStorage.setItem('activeView','privateEntries')
+        }
+      })
+    }
   }
 })(); // Namespace end
