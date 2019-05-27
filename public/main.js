@@ -418,12 +418,23 @@
 
   function handleEntryCommentsEvents(e) {
     e.preventDefault();
+    // Klick på ta bort tar bort ett inlägg
+    if (e.target.matches('[data-delid]')) {
+      if (confirm('Är du säker på att du vill ta bort inlägget?')) {
+        const id = e.target.getAttribute('data-delid');
+        fetch('/comment/'+id, { method : 'DELETE' })
+          .then(response => {
+            !response.ok
+              ? alert('Inlägget kunde inte tas bort!')
+              : (new EntryView).showEntry(sessionStorage.getItem('entryID'));
+          });
+      }
+    }
     // Lägg till eventlisteners för
-    // tabort
     // redigera
 
     // Klick på paging byter sida i pagingvyn
-    if (e.target.matches('.paging a')); {
+    else if (e.target.matches('.paging a')) {
       const pages = document.querySelectorAll('#showEntryComments > div');
       pagingViewer(pages,e);
     }
@@ -480,7 +491,6 @@
     e.preventDefault();
     fetch('/api/logoff')
     .then(response => {
-        console.log(response);
         (new BaseView).renderView(views.headerNotLoggedIn, 'header');
         (new EntryView).showEntries();
         sessionStorage.clear();

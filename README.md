@@ -75,4 +75,4 @@ Repo: https://github.com/Awkes/journal.git
 
 | DELETE            | Beskrivning |
 | ---               | --- |  
-| /comment          | Ta bort en kommentar som inloggad användare |
+| /comment/{id}     | Ta bort en kommentar som inloggad användare|

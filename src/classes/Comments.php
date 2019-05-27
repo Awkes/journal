@@ -44,6 +44,7 @@ class Comments extends Mapper{
     $s->bindParam(':createdBy', $_SESSION['userID'], PDO::PARAM_INT);
     $s->execute();
   }
+  
   public function deleteComment($commentID){
     $s = $this->db->prepare('DELETE FROM comments WHERE commentID = :commentID AND createdBy = :createdBy');
     $s->execute([
