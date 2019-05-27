@@ -78,8 +78,19 @@ class Entry extends Mapper {
   
   // Ta bort inlägg
   public function delEntry($id) {
+
     $s = $this->db->prepare('DELETE FROM entries WHERE entryID=? AND createdBy=?');
     $success = $s->execute([$id,$_SESSION['userID']]);
+
+    if($success){
+      $s = $this->db->prepare('DELETE FROM comments WHERE entryID=? AND createdBy=?');
+      $success = $s->execute([$id,$_SESSION['userID']]);
+
+      if($success){
+        $s = $this->db->prepare('DELETE FROM likes WHERE entryID=? AND userID =?');
+        $success = $s->execute([$id,$_SESSION['userID']]);
+      }
+    }
     return array(
       "id"=>$id,
       "action"=>'delete entry',
