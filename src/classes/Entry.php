@@ -27,7 +27,8 @@ class Entry extends Mapper {
 
   // Skapa nytt inlägg
   public function newEntry($title,$content) {
-    if(strlen($title) > 0 && strlen($content) > 0 && strlen($title) < 100 && strlen($content) < 1000){
+    // Kontrollerar att inlägg innehåller något och att inte max-gränsen överskrids
+    if(strlen($title) > 0 && strlen($content) > 0 && strlen($title) <= 100 && strlen($content) <= 1000){
       $s = $this->db->prepare('INSERT INTO entries (createdBy, title, content, createdAt) VALUES (?, ?, ?, NOW())');
       $success = $s->execute([$_SESSION['userID'],$title,$content]);
       $id = $this->getLatestEntryID();
@@ -56,7 +57,8 @@ class Entry extends Mapper {
   
   // Uppdatera inlägg
   public function updEntry($id,$title,$content) {
-    if(strlen($title) > 0 && strlen($content) > 0 && strlen($title) < 100 && strlen($content) < 1000){
+    // Kontrollerar att inlägg innehåller något och att inte max-gränsen överskrids
+    if(strlen($title) > 0 && strlen($content) > 0 && strlen($title) <= 100 && strlen($content) <= 1000){
       $s = $this->db->prepare('UPDATE entries SET title=?, content=? WHERE entryID=? AND createdBy=?');
       $success = $s->execute([$title,$content,$id,$_SESSION['userID']]);
       return array(
@@ -67,7 +69,7 @@ class Entry extends Mapper {
         "success"=>$success,
         "entryID"=>$id
       );
-    }else{
+    } else {
       return array(
         "success"=> false,
         "message" => 'Titeln måste vara mellan 1-100 bokstäver och meddelandet mellan 1-1000!'
@@ -77,15 +79,14 @@ class Entry extends Mapper {
   
   // Ta bort inlägg
   public function delEntry($id) {
-
     $s = $this->db->prepare('DELETE FROM entries WHERE entryID=? AND createdBy=?');
     $success = $s->execute([$id,$_SESSION['userID']]);
-
     if($success){
+      // Ta bort tillhörande kommentarer
       $s = $this->db->prepare('DELETE FROM comments WHERE entryID=?');
       $success = $s->execute([$id]);
-
       if($success){
+        // Ta bort tillhörande likes
         $s = $this->db->prepare('DELETE FROM likes WHERE entryID=?');
         $success = $s->execute([$id]);
       }
@@ -96,16 +97,4 @@ class Entry extends Mapper {
       "success"=>$success
     );
   }
-
-  // Redigera inlägg
-  public function editEntry($content) {
-    $s = $this->db->prepare('UPDATE entries SET title = :title, content = :content, createdAt = NOW() WHERE entryID = :entryID');
-    $s->execute([
-      ':title' => $content['title'],
-      ':content' => $content['content'],
-      ':entryID' => $content['entryID'],
-    ]);
-    var_dump($content['title']);
-  }
 }
-

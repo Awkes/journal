@@ -1,277 +1,254 @@
-body{
-    background-color: #efefef;
-    font-family: 'Montserrat', sans-serif;
+body {
+  background-color: #efefef;
+  font-family: 'Montserrat', sans-serif;
 }
 
-*{
-    box-sizing: border-box;
+* { box-sizing: border-box; }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  height: 100%;
+  margin: 20px auto;
 }
 
-.container{
-    display: flex;
-    flex-direction: column;
-    max-width: 1000px;
-    height: 100%;
-    margin: 20px auto;
-}
+.container, header, nav, main, footer { width: 100%; }
 
-.container, header, nav, main, footer{
-    width: 100%;
-}
-
-header{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 0.5em;
-    align-items: center;
+header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 0.5em;
+  align-items: center;
 }
 
 #logo,#memberLogout,nav { grid-column: 1/5; }
 
-#logo{
-    display: block;
-    width: 240px;
-    cursor: pointer;
-    margin: 0 auto;
+#logo {
+  display: block;
+  width: 240px;
+  cursor: pointer;
+  margin: 0 auto;
 }
 
 #searchEntries {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 0.5em;
-    margin: 0;
-    grid-column: 2/4;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.5em;
+  margin: 0;
+  grid-column: 2/4;
 }
 
-a{
-    color: black;
+a { color: black; }
+a:hover { text-decoration: none; }
+
+nav { text-align: center; }
+nav a {
+  display: inline-block;
+  padding: 10px 20px;
+  color: black;
+  font-size: 1.3em;
+  text-decoration: none;
+}
+nav a:hover { text-decoration: underline; }
+
+
+footer {
+  text-align: center;
+  padding: 10px 0;
 }
 
-a:hover{
-    text-decoration: none;
-}
-
-nav{
-    text-align: center; 
-}
-
-nav a{
-    display: inline-block;
-    padding: 10px 20px;
-    color: black;
-    font-size: 1.3em;
-    text-decoration: none;
-}
-
-nav a:hover{
-    text-decoration: underline;
-}
-
-footer{
-    text-align: center;
-    padding: 10px 0;
-}
-
-.post,.no-entries{
-    width: 100%;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    background-color: rgb(216, 216, 216);
-    padding: 10px;
-    margin: 0 10px 20px 0;
+.post, .no-entries {
+  width: 100%;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  background-color: rgb(216, 216, 216);
+  padding: 10px;
+  margin: 0 10px 20px 0;
 }
 
 #entriesListing .post { cursor: pointer; }
 
-table{
-    text-align: right;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px 0 10px 0;
+table {
+  text-align: right;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 0 10px 0;
 }
 
-#allUsers td{
-    padding: 12px 10px;
-}
+#allUsers td { padding: 12px 10px; }
 
-.loginDiv, .registerDiv{
-    width: 100%;
-    margin: 0;
+.loginDiv, .registerDiv {
+  width: 100%;
+  margin: 0;
 }
 
 #loginFormError, #registerFormError, #newEntryMessage, #showEntryCommentError, #editCommentError { color: #F00; }
 
-#loginTable, #registerTable, #memberSuccess, #newEntry, #editEntry{
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
-    background-color: rgb(216, 216, 216);
-    padding: 10px 6px 10px 10px;
-    margin-bottom: 20px;
+#loginTable, #registerTable, #memberSuccess, #newEntry, #editEntry {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  background-color: rgb(216, 216, 216);
+  padding: 10px 6px 10px 10px;
+  margin-bottom: 20px;
 }
 
-#allUsers{
-    padding: 0 0 20px 10px;
+#allUsers { padding: 0 0 20px 10px; }
+
+#newEntry, #editEntry {
+  display: flex;
+  justify-content: center;
 }
 
-#newEntry, #editEntry{
-    display: flex;
-    justify-content: center;
-}
-
-#newEntryForm, #editEntryForm{
-    width: 100%;
-}
+#newEntryForm, #editEntryForm { width: 100%; }
 
 #newEntryTable td, #editEntryTable td, #allUsers td{
-    width: auto;
-    text-align: left;
+  width: auto;
+  text-align: left;
 }
 
 #newEntryTable form{
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
-#newEntryTable h1, #editEntryTable h1{
-    margin-bottom: 20px;
+#newEntryTable h1, #editEntryTable h1 { margin-bottom: 20px; }
+
+#memberLogout {
+  width: 100%;
+  text-align: center;
+  padding: 0;
 }
 
-#memberLogout{
-    width: 100%;
-    text-align: center;
-    padding: 0;
+#memberLogout a {
+  color: black;
+  font-size: 1.2em;
+  margin-left: 10px;
 }
 
-#memberLogout a{
-    color: black;
-    font-size: 1.2em;
-    margin-left: 10px;
-}
-
-#loggedInMember{
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    margin-right: 10px;
+#loggedInMember {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  margin-right: 10px;
 }
 
 #logreg {
-    display: flex;
-    width: 100%;
-    margin-top: 10px;
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
 }
 
-input[type=text], input[type=password], button, textarea{
-    font-family: 'Montserrat', sans-serif;
-    margin: 10px 0 10px 0;
-    border: 1px solid black;
-    padding: 10px;
-    width: 100%;
+input[type=text], input[type=password], button, textarea {
+  font-family: 'Montserrat', sans-serif;
+  margin: 10px 0 10px 0;
+  border: 1px solid black;
+  padding: 10px;
+  width: 100%;
 }
 
-input[type=text], input[type=password], button{
-    background-color: #fff;
+input[type=text], input[type=password], button { background-color: #fff; }
+
+textarea {
+  resize: none;
+  height: 200px;
 }
 
-textarea{
-    resize: none;
-    height: 200px;
+.btn {
+  float: right;
+  margin-right: 4px;
+  width: 50%;
 }
 
-.btn{
-    float: right;
-    margin-right: 4px;
-    width: 50%;
+label { margin-right: 20px; }
+
+main h3 {
+  margin: 8px 0 0 0;
+  padding-bottom: 0;
+  font-size: 1.4em;
 }
 
-label{
-    margin-right: 20px;
-}
-
-main h3{
-    margin: 8px 0 0 0;
-    padding-bottom: 0;
-    font-size: 1.4em;
-}
-
-main h1{
-    font-size: 1.6em;
-    margin: 0 0 10px 0;
-    text-align: left;
+main h1 {
+  font-size: 1.6em;
+  margin: 0 0 10px 0;
+  text-align: left;
 }
 
 .post p{
-    margin: 0 0 20px 0;
+  margin: 0 0 20px 0;
 }
 
-.post h3{
-    margin: 0 0 10px 0;
+.post h3 { margin: 0 0 10px 0; }
+
+hr {
+  margin: 5px 0 20px 0;
+  border: 1px solid black;
 }
 
-hr{
-    margin: 5px 0 20px 0;
-    border: 1px solid black;
+#allUsers tr:nth-child(odd) { background-color: rgb(216, 216, 216); }
+
+#user {
+  background-color: rgb(216, 216, 216);
+  margin-bottom: 10px;
+  padding: 0 10px 0 10px;
 }
-
-#allUsers tr:nth-child(odd){ background-color: rgb(216, 216, 216); }
-
-#user{
-    background-color: rgb(216, 216, 216);
-    margin-bottom: 10px;
-    padding: 0 10px 0 10px;
-}
-
-/* Visa inlägg */
 
 #showEntryOptions, .showEntryCommentBottom {
   display: flex;
   justify-content: space-between;
 }
+
 #showEntryCommentForm { 
   margin: 0; 
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
 #showEntryComment { height: 6em; }
 #showEntryComment, #showEntryCommentError { grid-column: 1/3; }
 #showEntryCommentForm button { grid-column: 2/3; }
+
 #showEntryLikes { 
   font-weight: bold;
   margin-right: 1em; 
 }
 
-/* Paginering */
 .paging-hidden { display: none; }
 .paging { list-style-type: none; }
 .paging li { display: inline-block; }
+
 .paging a { 
-    display: block; 
-    border: 1px solid #000;
-    width: 2em;
-    padding: 0.2em;
-    margin: 0.5em;
-    text-align: center;
-    text-decoration: none;
-    color: #000;
+  display: block; 
+  border: 1px solid #000;
+  width: 2em;
+  padding: 0.2em;
+  margin: 0.5em;
+  text-align: center;
+  text-decoration: none;
+  color: #000;
 }
+
 .paging-active { 
   background-color: rgb(216, 216, 216); 
   font-weight: bold;
 }
 
-/* Header > 1080px */
 @media(min-width: 1080px) {
   header { grid-template-columns: 2fr 1fr 1fr 2fr; }
+  
   #logo { 
     margin: initial; 
     grid-column: 1/3;
   }
+
   #memberLogout { 
     grid-column: 3/5;
     text-align: right;
-}
+  }
+
   nav { 
     grid-column: 1/4; 
     text-align: left;
-}
+  }
+  
   #searchEntries { grid-column: 4/5; }
 }
