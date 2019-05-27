@@ -1,65 +1,263 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv-SE">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title><?=$title?></title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <title>MAD Journal</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-
-  <template id="loginFormTemplate">
-    <h2>Logga in</h2>
-    <form id="loginForm" method="post" action="/api/login">
-      <table>
-        <tr>
-          <td><label for="loginUser">Användare:</label></td>
-          <td><input type="text" id="loginUser" name="username"></td>
-        </tr>
-        <tr>
-          <td><label for="loginPass">Lösenord:</label></td>
-          <td><input type="password" id="loginPass" name="password"></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td><button type="submit">Logga in</button></td>
-        </tr>
-      </table>
-    </form>
-  </template>
-
-  <template id="loggedInTemplate">
-    <h2>Inloggad</h2>
-    <p>Du är inloggad som <b><?=$_SESSION['username'];?></b></p>
-  </template>
-
-  <template id="registerFormTemplate">
-    <h2>Registrera användare</h2>
-    <p>Det här är ett template som visar registreringsformulär.</p>
-  </template>
-
-  <template id="indexEntry">
-  <button id="test">Tryck</button>
-  </template>
-
-  <template id="showAllUsers">
-    <h2>Alla registrerade användare</h2>
-    <ul>
-
-    </ul>
-  </template>
-
   <div class="container">
 
     <header>
-      <h1><?=$title?></h1>
     </header>
+
+    <!-- Header templates -->
+    <template id="logoTemplate">
+      <div id="logo">
+        <img src="logo.png" id="logo" alt="logo">
+      </div>
+    </template>
+
+    <template id="searchTemplate">
+      <form id="searchEntries">
+        <input type="text" id="searchString">
+        <button type="submit" id="searchBtn" disabled default>Sök</button>
+      </form>
+    </template>
+
+    <template id="navTemplate">
+      <nav>
+        <a href="" id="navAllEntries">Alla inlägg</a>
+        <a href="" id="navPrivateEntries">Mina inlägg</a>
+        <a href="" id="navNewEntry">Nytt inlägg</a>
+        <a href="" id="navAllUsers">Medlemmar</a>
+      </nav>
+    </template>
+
+    <template id="memberLogoutTemplate">
+      <div id="memberLogout">
+        <span id="loggedInMember"></span>
+        |
+        <span id="logoff"><a href="">Logga ut</a></span>
+      </div>
+    </template>
+    
+    <!-- Header templates - END -->
+
+    <hr>
+
     <main>
-      
     </main>
 
+    <!-- Main templates -->
+
+    <template id="loginFormTemplate">
+      <form class="loginDiv" id="loginForm">
+        <table id="loginTable">
+          <tr>
+            <td colspan="4">
+              <h1>Logga in</h1>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3"><label for="username">Användarnamn:</label></td>
+            <td><input type="text" name="username"></td>
+          </tr>
+          <tr>
+            <td colspan="3"><label for="password">Lösenord:</label></td>
+            <td><input type="password" name="password"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td colspan="4"><button type="submit" class="btn">Logga in</button></td>
+          </tr>
+          <tr>
+            <td colspan="5" id="loginFormError">
+            </td>
+          </tr>
+        </table>
+      </form>
+    </template>
+
+    <template id="registerFormTemplate">
+      <form class="registerDiv" id="registerForm">
+        <table id="registerTable">
+          <tr>
+            <td colspan="4">
+              <h1>Bli medlem</h1>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3"><label for="username">Användarnamn:</label></td>
+            <td><input type="text" name="username"></td>
+          </tr>
+          <tr>
+            <td colspan="3"><label for="password">Lösenord:</label></td>
+            <td><input type="password" name="password"></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td colspan="4"><button type="submit" class="btn">Bli medlem</button></td>
+          </tr>
+          <tr>
+            <td colspan="5" id="registerFormError">
+            </td>
+          </tr>
+        </table>
+      </form>
+    </template>
+  
+    <template id="memberSuccessTemplate">
+      <div id="memberSuccess">
+        <h1>Grattis!</h1>
+        <p>Du är nu medlem och kan logga in här ovanför.</p>
+      </div>
+    </template>
+    
+    <template id="entriesTemplate">
+      <div id="entriesListing">
+      </div>
+    </template>
+ 
+    <template id="showEntryTemplate">
+      <div id="showEntry">
+        <h1 id="showEntryTitle"></h1>
+        <div>
+          <span id="showEntryDate"></span>
+          -
+          <span id="showEntryUser"></span>
+        </div>
+        <div class="post">
+          <div id="showEntryContent"></div>
+        </div>
+        <div id="showEntryOptions">
+          <div>
+            &#128077;
+            <span id="showEntryLikes">3</span>
+            <a href="" id="showEntryLike">Gilla</a>
+          </div>
+          <div id="showEntryLinks">
+            <a href="" id="showEntryEdit">Redigera</a>
+            |
+            <a href="" id="showEntryDelete">Ta bort</a>
+          </div>
+        </div>
+      </div>
+      <hr>
+    </template>
+
+    <template id="showEntryCommentTemplate">
+      <h2><label for="showEntryComment">Kommentera</label></h2>
+      <div>
+        <form id="showEntryCommentForm">
+          <textarea id="showEntryComment" name="content"></textarea>
+          <button type="submit">Kommentera</button>
+          <div id="showEntryCommentError"></div>
+        </form>
+      </div>
+      <hr>
+    </template>
+
+    <template id="showEntryCommentsTemplate">
+      <h2>Kommentarer</h2>
+      <div id="showEntryComments">       
+      </div>
+    </template>
+
+    <template id="editCommentTemplate">
+      <h2><label for="editComment">Redigera Kommentar</label></h2>
+      <div>
+        <form id="editCommentForm">
+          <textarea id="editCommentContent" name="content"></textarea>
+          <button type="submit">Uppdatera kommentar</button>
+          <div id="editCommentError"></div>
+        </form>
+      </div>
+    </template>
+  
+    <template id="newEntryTemplate">
+      <div id="newEntry">
+        <form id="newEntryForm">
+          <table id="newEntryTable">
+            <tr>
+              <td colspan="4">
+                <h1>Nytt inlägg</h1>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3"><label for="newEntryTitle">Titel:</label></td>
+            </tr>
+            <tr>
+              <td><input type="text" name="title"></td>
+            </tr>
+            <tr>
+              <td colspan="3"><label for="newEntryPost">Inlägg:</label></td>
+            </tr>
+            <tr>
+              <td><textarea name="content"></textarea></td>
+            </tr>
+            <tr>
+              <td colspan="4"><button type="submit" class="btn">Skriv inlägg</button></td>
+            </tr>
+            <tr>
+            <td id ="newEntryMessage"></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </template>
+    
+    <template id="editEntryTemplate">
+      <div id="editEntry">
+        <form id="editEntryForm">
+          <table id="editEntryTable">
+            <tr>
+              <td colspan="4">
+                <h1>Redigera inlägg</h1>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3"><label for="editEntryTitle">Titel:</label></td>
+            </tr>
+            <tr>
+              <td><input type="text" name="title" id="editEntryTitle"></td>
+            </tr>
+            <tr>
+              <td colspan="3"><label for="editEntryPost">Inlägg:</label></td>
+            </tr>
+            <tr>
+              <td><textarea name="content" id="editEntryContent"></textarea></td>
+            </tr>
+            <tr>
+              <td colspan="4"><button type="submit" class="btn">Uppdatera inlägg</button></td>
+            </tr>
+            <tr>
+              <td id="editEntryMessage"></td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </template>
+
+    <template id="membersTemplate">
+      <table id="allUsers">
+        <tbody>
+        </tbody>
+      </table>
+    </template>
+
+    <!-- Main templates - END -->
+
+    <hr>
+
+    <footer>
+      <span id="footer-copyright">Copyright &copy; MAD - Magnus Lidmyr, Andreas Åkerlöf, Daniel Hessling</span>
+    </footer>
   </div>
-  <script type="text/javascript" src="main.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

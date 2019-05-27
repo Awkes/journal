@@ -4,7 +4,7 @@ return function ($app) {
   // Register auth middleware
   $auth = require __DIR__ . '/../middlewares/auth.php';
 
-  // GET route som hämtar inlägg
+  // GET route som hämtar flera inlägg
   $app->get('/entries', function ($request, $response) {  
     $entry = new Entry($this->db);
     // Läs in eventuella qrystrings
@@ -17,8 +17,17 @@ return function ($app) {
       ? 'DESC' : 'ASC';
     // Hämta från specifik user
     $user = (isset($qryString['user']) && is_numeric($qryString['user'])) 
-      ? 'WHERE createdBy = '.$qryString['user'] : '';
-    return $response->withJson($entry->getEntries($user,$order,$limit));
+      ? 'AND createdBy = '.$qryString['user'] : '';
+    // Sök efter ett inlägg
+    $search = isset($qryString['search']) ? $qryString['search'] : '';
+
+    return $response->withJson($entry->getEntries($user,$order,$limit,$search));
+  });
+
+  // GET route som hämtar ett inlägg.
+  $app->get('/entry/{id}', function ($request, $response, $args) {
+    $entry = new Entry($this->db);
+    return $response->withJson($entry->getEntry($args['id']));
   });
 
   // POST route som sparar ett nytt inlägg för en viss användare.
@@ -41,7 +50,7 @@ return function ($app) {
       return $response->withJson($entry->updEntry($args['id'],$data['title'],$data['content']));
     } 
     else {
-      return $response->withStatus(400);
+      return $response->withStatus();
     }
   })->add($auth);
 
@@ -50,4 +59,5 @@ return function ($app) {
     $entry = new Entry($this->db);
     return $response->withJson($entry->delEntry($args['id']));
   })->add($auth);
+
 };

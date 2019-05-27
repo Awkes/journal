@@ -1,14 +1,6 @@
 <?php
 
 class User extends Mapper {
-  // public function getUserByID($userID) {
-  //   $statement = $this->db->prepare("SELECT * FROM users WHERE userID = :userID");
-  //   $statement->execute([
-  //     ':userID' => $userID
-  //   ]);
-  //   return $statement->fetch(PDO::FETCH_ASSOC);
-  // }
-
   // Hämta alla användare
   public function getAllUsers() {
     $statement = $this->db->prepare('SELECT userID, username FROM users');
@@ -24,21 +16,29 @@ class User extends Mapper {
   }
 
   // Kontrollera om användare existerar
-  public function checkUser($user) {
-    $statement = $this->db->prepare('SELECT username FROM users WHERE userName=?');
+  private function checkUser($user) {
+    $statement = $this->db->prepare('SELECT username FROM users WHERE username=?');
     $statement->execute([$user]);
     $result = $statement->fetch(PDO::FETCH_ASSOC);
-    return isset($result['userName']) ? true : false;
+    return isset($result['username']) ? true : false;
   }
   
   // Skapa ny användare
   public function newUser($user,$pass) {
-    // Kontrollera om användare redan existerar, isåfall returnera fel.
-    if ($this->checkUser($user)) {
+    // Om användarenamn och lösenord är mindre än 4 tecken, returnera fel
+    if (strlen($user) < 4 || strlen($pass) < 4) {
       return array(
         "user"=>$user,
         "success"=>false,
-        "message"=>'User already exists'
+        "message"=>'Användarnamn och lösenord måste vara minst 4 tecken.'
+      );
+    }
+    // Kontrollera om användare redan existerar, isåfall returnera fel.
+    elseif ($this->checkUser($user)) {
+      return array(
+        "user"=>$user,
+        "success"=>false,
+        "message"=>"Användaren $user existerar redan, försök med ett annat användarnamn."
       );
     }
     // Annars skapa användare
