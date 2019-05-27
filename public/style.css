@@ -55,9 +55,13 @@ nav a{
     text-decoration: none;
 }
 
+nav a:hover{
+    text-decoration: underline;
+}
+
 footer{
     text-align: center;
-    padding: 10px 0px;
+    padding: 10px 0;
 }
 
 .post,.no-entries{
@@ -75,7 +79,11 @@ table{
     text-align: right;
     width: 100%;
     box-sizing: border-box;
-    padding: 10px 10px 10px 0;
+    padding: 10px 0 10px 0;
+}
+
+#allUsers td{
+    padding: 12px 10px;
 }
 
 .loginDiv, .registerDiv{
@@ -83,7 +91,7 @@ table{
     margin: 0;
 }
 
-#loginFormError, #registerFormError, #newEntryMessage{ color: #F00; }
+#loginFormError, #registerFormError{ color: #F00; }
 
 #loginTable, #registerTable, #memberSuccess, #newEntry, #editEntry{
     border-top: 1px solid black;
@@ -106,10 +114,8 @@ table{
     justify-content: center;
 }
 
-form{
+#newEntryForm, #editEntryForm{
     width: 100%;
-    margin-left: 100px;
-    margin-right: 100px;
 }
 
 #newEntryTable td, #editEntryTable td, #allUsers td{
@@ -124,7 +130,7 @@ form{
 #memberLogout{
     width: 100%;
     text-align: center;
-    padding: 0 20px;
+    padding: 0;
 }
 
 #memberLogout a{
@@ -144,24 +150,21 @@ form{
     margin-top: 10px;
 }
 
-input[type=text], input[type=password], button{
-    margin: 10px 0px 10px 0;
+input[type=text], input[type=password], button, textarea{
+    font-family: 'Montserrat', sans-serif;
+    margin: 10px 0 10px 0;
     border: 1px solid black;
-    background-color: #fff;
     padding: 10px 14px;
     width: 100%;
 }
 
-textarea{
-    margin: 10px 0px 10px 0;
-    border: 1px solid black;
-    resize: none;
-    width: 100%;
-    height: 200px;
+input[type=text], input[type=password], button{
+    background-color: #fff;
 }
 
-button{
-    width: 100%;
+textarea{
+    resize: none;
+    height: 200px;
 }
 
 .btn{
@@ -183,7 +186,7 @@ main h3{
 
 main h1{
     font-size: 1.6em;
-    margin: 0px 10px 10px 0px;
+    margin: 0 0 10px 0;
     text-align: left;
 }
 
@@ -196,7 +199,7 @@ main h1{
 }
 
 hr{
-    margin: 5px 0 20px 0;;
+    margin: 5px 0 20px 0;
     border: 1px solid black;
 }
 
@@ -215,7 +218,7 @@ hr{
   justify-content: space-between;
 }
 #showEntryCommentForm { 
-  margin :0; 
+  margin: 0; 
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
@@ -255,8 +258,13 @@ hr{
     margin: initial; 
     grid-column: 1/3;
   }
-  #memberLogout { grid-column: 3/5; }
-  #memberLogout,nav { text-align: right; }
-  nav { grid-column: 1/4; }
+  #memberLogout { 
+    grid-column: 3/5;
+    text-align: right;
+}
+  nav { 
+    grid-column: 1/4; 
+    text-align: left;
+}
   #searchEntries { grid-column: 4/5; }
 }
