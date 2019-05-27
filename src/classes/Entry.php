@@ -82,12 +82,12 @@ class Entry extends Mapper {
     $success = $s->execute([$id,$_SESSION['userID']]);
 
     if($success){
-      $s = $this->db->prepare('DELETE FROM comments WHERE entryID=? AND createdBy=?');
-      $success = $s->execute([$id,$_SESSION['userID']]);
+      $s = $this->db->prepare('DELETE FROM comments WHERE entryID=?');
+      $success = $s->execute([$id]);
 
       if($success){
-        $s = $this->db->prepare('DELETE FROM likes WHERE entryID=? AND userID =?');
-        $success = $s->execute([$id,$_SESSION['userID']]);
+        $s = $this->db->prepare('DELETE FROM likes WHERE entryID=?');
+        $success = $s->execute([$id]);
       }
     }
     return array(
