@@ -598,6 +598,7 @@
         document.querySelector('#newEntryMessage').textContent = data.message
       }else{
         sessionStorage.setItem('entryID', data.entryID);
+        sessionStorage.setItem('activeView', 'showEntry');
         (new EntryView).showEntry(data.entryID);
       }
     });  
@@ -662,10 +663,13 @@
     })
     .then(response => response.ok ? response.json() : new Error(response.statustext))
     .then(data => {
-      console.log(data);
-      !data.success
-      ? document.querySelector('#editEntryMessage').textContent = data.message
-        : (new EntryView).showEntry(data.entryID);  
+      if (!data.success) {
+        document.querySelector('#editEntryMessage').textContent = data.message;
+      }
+      else {
+        sessionStorage.setItem('activeView', 'showEntry');
+        (new EntryView).showEntry(data.entryID);
+      }
     })
   }
 
