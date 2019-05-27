@@ -557,9 +557,12 @@
     })
     .then(response => response.ok ? response.json() : new Error(response.statustext))
     .then(data => {
-      !data.success
-        ? document.querySelector('#newEntryMessage').textContent = data.message
-        : (new EntryView).showEntry(data.entryID);  
+      if(!data.success){
+        document.querySelector('#newEntryMessage').textContent = data.message
+      }else{
+        sessionStorage.setItem('entryID', data.entryID);
+         (new EntryView).showEntry(data.entryID);  
+      }
     })
     
   }
