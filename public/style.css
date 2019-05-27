@@ -151,6 +151,7 @@ table{
 #loggedInMember{
     font-size: 1.2em;
     margin-bottom: 10px;
+    margin-right: 10px;
 }
 
 #logreg {
@@ -178,7 +179,7 @@ textarea{
 
 .btn{
     float: right;
-    margin-right: 3px;
+    margin-right: 4px;
     width: 50%;
 }
 
