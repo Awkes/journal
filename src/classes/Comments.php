@@ -29,7 +29,7 @@ class Comments extends Mapper{
       ]);
       return array(
         "userID"=>$_SESSION['userID'],
-        "content"=>$content,
+        "content"=>$comment['content'],
         "action"=>'new comment',
         "success"=>$success
       );
