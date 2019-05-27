@@ -34,7 +34,6 @@ return function ($app) {
     }else{
         return $response->withStatus(400);
     }
-
   })->add($auth);
 
   // Redigera kommentar
@@ -43,7 +42,6 @@ return function ($app) {
     if(isset($data['content']) && isset($args['id'])) {
       $commentID = $args['id'];
       $comment = new Comments($this->db);
-  
       return $response->withJson($comment->editComment($data, $commentID));
     }else {
       return $response->withStatus(400);
@@ -51,11 +49,8 @@ return function ($app) {
   })->add($auth);
 
   $app->delete('/comment/{id}', function($request, $response, $args){
-
     $commentID = $args['id'];
     $comment = new Comments($this->db);
-
     return $response->withJson($comment->deleteComment($commentID));
   })->add($auth);
-
 };

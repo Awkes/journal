@@ -25,7 +25,7 @@ class User extends Mapper {
   
   // Skapa ny användare
   public function newUser($user,$pass) {
-    // Om användarenamn och lösenord är mindre än 4 tecken, returnera fel
+    // Om användarnamn och lösenord är mindre än 4 tecken, returnera fel
     if (strlen($user) < 4 || strlen($pass) < 4) {
       return array(
         "user"=>$user,
@@ -51,5 +51,4 @@ class User extends Mapper {
       );
     }
   }
-
 }

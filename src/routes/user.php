@@ -19,7 +19,6 @@ return function ($app) {
   // POST route som registrerar en ny användare.
   $app->POST('/user', function ($request, $response) {
     $data = $request->getParsedBody();
-
     if (isset($data['username']) && isset($data['password'])) {
       $user = new User($this->db);
       return $response->withJson($user->newUser($data['username'],$data['password']));
