@@ -224,6 +224,10 @@ hr{
   grid-column: 1/3;
 }
 #showEntryCommentForm button { grid-column: 2/3; }
+#showEntryLikes { 
+  font-weight: bold;
+  margin-right: 1em; 
+}
 
 /* Paginering */
 .paging-hidden { display: none; }

@@ -30,19 +30,29 @@ class Entry extends Mapper {
     if(strlen($title) > 0 && strlen($content) > 0 && strlen($title) < 100 && strlen($content) < 1000){
       $s = $this->db->prepare('INSERT INTO entries (createdBy, title, content, createdAt) VALUES (?, ?, ?, NOW())');
       $success = $s->execute([$_SESSION['userID'],$title,$content]);
+      $id = $this->getLatestEntryID();
       return array(
         "userID"=>$_SESSION['userID'],
         "title"=>$title,
         "content"=>$content,
         "action"=>'new entry',
+        "entryID"=>$id,
         "success"=>$success
       );
-    }else {
+    } else {
       return array(
         "success" => false,
         "message" => 'Titeln måste vara mellan 1-100 bokstäver och meddelandet mellan 1-1000!'
+
       );
     }
+  }
+
+  // Hämta senaste entryID av inloggad användare
+  private function getLatestEntryID() {
+    $s = $this->db->prepare('SELECT entryID FROM entries WHERE createdBy=? ORDER BY createdAt DESC LIMIT 1');
+    $success = $s->execute([$_SESSION['userID']]);
+    return $s->fetch(PDO::FETCH_ASSOC)['entryID'];
   }
   
   // Uppdatera inlägg
